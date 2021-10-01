@@ -20,4 +20,6 @@ In order to examine the stack, we print the address of local variables. The stac
 
 ## Exercise 3 : GCC optimisations
 
-
+First thing to notice : optimization separates rodata in subsections, one for each literal string.
+The data segment seems not to be affected.
+Os and O2 move a large part of the text section after string sections.
