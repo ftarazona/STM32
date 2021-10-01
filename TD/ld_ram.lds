@@ -21,13 +21,13 @@ SECTIONS	{
 
 	.data : {
 		_data = . ;
-		*(data)
+		*(.data)
 		_edata = . ;
 	} > sram1
 
 	.bss :	{
 		_bss = . ;
-		*(bss) *(COM*)
+		*(.bss) *(COM*)
 		_ebss = . ;
 	} > sram1
 }
