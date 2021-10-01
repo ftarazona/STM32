@@ -31,13 +31,13 @@ By disassembling we can see that **O0** uses the _frame pointer_ whereas **O1** 
 **O2** adds a _text.startup_ subsection, but the content of the code remains identical to **O1**.
 
 **Os** (speed optim) pushes even more registers, so that it doesn't have to decrement the _stack pointer_ on instruction 1c.
-<br>
+
 **Now we focus on "static dump" (static const char msg[])**
 <br>
 For **O0**, it is identical to "base dump".
 For **O1, O2, Os**, the section _.rodata_ is removed when _static_ is added. The static variable is *visible only in this file*. When non-static, maybe the compiler *adds some information in .rodata so that when linking, other files can have access to the variable*.
 When indicating _static_, the compiler then know it doesn't have to add this section.
-<br>
+
 **Now we focus on "pointer dump" (const char\* msg)**
 <br>
 For **O0**, we notice that the size of _.text_ and _.data_ is increased by four octet. _.rodata_ size is 10 less than "base dump". In _.text_, we notice that up to now, _printf(mesg)_ was translated into _puts(mesg)_. I suppose that it is done because _mesg_ has a **fixed size** AND is **terminated by '\n'**.
