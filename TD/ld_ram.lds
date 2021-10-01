@@ -1,12 +1,10 @@
-ENTRY(_start)
-
 MEMORY	{
 	flash (R) : ORIGIN = 0x08000000, LENGTH = 1M
 	sram1 (WX) : ORIGIN = 0x20000000, LENGTH = 96K
 	sram2 (W) : ORIGIN = 0x10000000, LENGTH = 32K
 }
 
-_stack = . ;
+ENTRY(_start)
 
 SECTIONS	{
 	.text :	{
@@ -32,10 +30,7 @@ SECTIONS	{
 		*(bss) *(COM*)
 		_ebss = . ;
 	} > sram1
-
-	.stack :	{
-		_stack = . ;
-		*(.stack)
-		_estack = . ;
-	} > sram2
 }
+
+_stack = ORIGIN(sram2) + LENGTH(sram2) ;
+
