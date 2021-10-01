@@ -1,11 +1,16 @@
+ENTRY(main)
+
 MEMORY	{
 	flash (R) : ORIGIN = 0x08000000, LENGTH = 1M
-	sram1 (RX) : ORIGIN = 0x20000000, LENGTH = 96K
+	sram1 (WX) : ORIGIN = 0x20000000, LENGTH = 96K
 	sram2 (W) : ORIGIN = 0x10000000, LENGTH = 32K
 }
 
+_stack = . ;
+
 SECTIONS	{
 	.text :	{
+		_text = . ;
 		*(.text)
 		_etext = . ;
 	} > sram1
