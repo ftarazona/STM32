@@ -1,0 +1,50 @@
+
+static_1.o:     file format elf32-littlearm
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000074  00000000  00000000  00000034  2**2
+                  CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
+  1 .data         00000004  00000000  00000000  000000a8  2**2
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000001  00000000  00000000  000000ac  2**0
+                  ALLOC
+  3 .rodata.str1.4 00000030  00000000  00000000  000000ac  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  4 .comment      0000005a  00000000  00000000  000000dc  2**0
+                  CONTENTS, READONLY
+  5 .ARM.attributes 0000002a  00000000  00000000  00000136  2**0
+                  CONTENTS, READONLY
+
+static_1.o:     file format elf32-littlearm
+
+
+Disassembly of section .text:
+
+00000000 <main>:
+   0:	e92d4070 	push	{r4, r5, r6, lr}
+   4:	e24dd008 	sub	sp, sp, #8
+   8:	e59f6050 	ldr	r6, [pc, #80]	; 60 <main+0x60>
+   c:	e3a0300c 	mov	r3, #12
+  10:	e5863000 	str	r3, [r6]
+  14:	e59f5048 	ldr	r5, [pc, #72]	; 64 <main+0x64>
+  18:	e5d54000 	ldrb	r4, [r5]
+  1c:	e2844001 	add	r4, r4, #1
+  20:	e20440ff 	and	r4, r4, #255	; 0xff
+  24:	e5c54000 	strb	r4, [r5]
+  28:	e59f0038 	ldr	r0, [pc, #56]	; 68 <main+0x68>
+  2c:	ebfffffe 	bl	0 <puts>
+  30:	e284400c 	add	r4, r4, #12
+  34:	e58d4000 	str	r4, [sp]
+  38:	e5d53000 	ldrb	r3, [r5]
+  3c:	e5962000 	ldr	r2, [r6]
+  40:	e59f1024 	ldr	r1, [pc, #36]	; 6c <main+0x6c>
+  44:	e5911000 	ldr	r1, [r1]
+  48:	e59f0020 	ldr	r0, [pc, #32]	; 70 <main+0x70>
+  4c:	ebfffffe 	bl	0 <printf>
+  50:	e3a00000 	mov	r0, #0
+  54:	e28dd008 	add	sp, sp, #8
+  58:	e8bd4070 	pop	{r4, r5, r6, lr}
+  5c:	e12fff1e 	bx	lr
+	...
+  70:	00000010 	.word	0x00000010

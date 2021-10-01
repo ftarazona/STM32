@@ -1,0 +1,69 @@
+
+pointer_0.o:     file format elf32-littlearm
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000000c0  00000000  00000000  00000034  2**2
+                  CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
+  1 .data         00000008  00000000  00000000  000000f4  2**2
+                  CONTENTS, ALLOC, LOAD, RELOC, DATA
+  2 .bss          00000001  00000000  00000000  000000fc  2**0
+                  ALLOC
+  3 .rodata       00000030  00000000  00000000  000000fc  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  4 .comment      0000005a  00000000  00000000  0000012c  2**0
+                  CONTENTS, READONLY
+  5 .ARM.attributes 0000002a  00000000  00000000  00000186  2**0
+                  CONTENTS, READONLY
+
+pointer_0.o:     file format elf32-littlearm
+
+
+Disassembly of section .text:
+
+00000000 <main>:
+   0:	e92d4800 	push	{fp, lr}
+   4:	e28db004 	add	fp, sp, #4
+   8:	e24dd010 	sub	sp, sp, #16
+   c:	e59f3098 	ldr	r3, [pc, #152]	; ac <main+0xac>
+  10:	e3a0200c 	mov	r2, #12
+  14:	e5832000 	str	r2, [r3]
+  18:	e59f3090 	ldr	r3, [pc, #144]	; b0 <main+0xb0>
+  1c:	e5d33000 	ldrb	r3, [r3]
+  20:	e2833001 	add	r3, r3, #1
+  24:	e20320ff 	and	r2, r3, #255	; 0xff
+  28:	e59f3080 	ldr	r3, [pc, #128]	; b0 <main+0xb0>
+  2c:	e5c32000 	strb	r2, [r3]
+  30:	e59f3078 	ldr	r3, [pc, #120]	; b0 <main+0xb0>
+  34:	e5d33000 	ldrb	r3, [r3]
+  38:	e1a03803 	lsl	r3, r3, #16
+  3c:	e1a02823 	lsr	r2, r3, #16
+  40:	e59f3064 	ldr	r3, [pc, #100]	; ac <main+0xac>
+  44:	e5933000 	ldr	r3, [r3]
+  48:	e1a03803 	lsl	r3, r3, #16
+  4c:	e1a03823 	lsr	r3, r3, #16
+  50:	e0823003 	add	r3, r2, r3
+  54:	e14b30b6 	strh	r3, [fp, #-6]
+  58:	e59f3054 	ldr	r3, [pc, #84]	; b4 <main+0xb4>
+  5c:	e5933000 	ldr	r3, [r3]
+  60:	e1a00003 	mov	r0, r3
+  64:	ebfffffe 	bl	0 <printf>
+  68:	e59f3048 	ldr	r3, [pc, #72]	; b8 <main+0xb8>
+  6c:	e5931000 	ldr	r1, [r3]
+  70:	e59f3034 	ldr	r3, [pc, #52]	; ac <main+0xac>
+  74:	e5932000 	ldr	r2, [r3]
+  78:	e59f3030 	ldr	r3, [pc, #48]	; b0 <main+0xb0>
+  7c:	e5d33000 	ldrb	r3, [r3]
+  80:	e1a00003 	mov	r0, r3
+  84:	e15b30b6 	ldrh	r3, [fp, #-6]
+  88:	e58d3000 	str	r3, [sp]
+  8c:	e1a03000 	mov	r3, r0
+  90:	e59f0024 	ldr	r0, [pc, #36]	; bc <main+0xbc>
+  94:	ebfffffe 	bl	0 <printf>
+  98:	e3a03000 	mov	r3, #0
+  9c:	e1a00003 	mov	r0, r3
+  a0:	e24bd004 	sub	sp, fp, #4
+  a4:	e8bd4800 	pop	{fp, lr}
+  a8:	e12fff1e 	bx	lr
+	...
+  bc:	00000010 	.word	0x00000010
