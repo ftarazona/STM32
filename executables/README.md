@@ -23,3 +23,8 @@ In order to examine the stack, we print the address of local variables. The stac
 First thing to notice : optimization separates rodata in subsections, one for each literal string.
 The data segment seems not to be affected.
 Os and O2 move a large part of the text section after string sections.
+
+First of all we focus on "base dump" files (const char msg[])
+By disassembling we can see that O0 uses the frame pointer whereas O1 or higher do not. O1 pushes more registers (r4, r5, r6, lr) in order to reduce the number of instructions required. O0 uses less registers to process, so it has more instructions to do in order to free some required registers.
+O2 adds a text.startup subsection, but the content of the code remains identical to O1.
+Os (speed optim) pushes even more registers, so that it doesn't have to decrement the stack pointer on instruction 1c.
