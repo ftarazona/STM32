@@ -33,3 +33,11 @@ Now we focus on "static dump" (static const char msg[])
 For O0, it is identical to "base dump".
 For O1, O2, Os, the section .rodata is removed when static is added. The static variable is visible only in this file. When non-static, maybe the compiler adds some information in .rodata so that when linking, other files can have access to the variable.
 When indicating static, the compiler then know it doesn't have to add this section.
+
+Now we focus on "pointer dump" (const char\* msg)
+For O0, we notice that the size of .text and .data is increased by four octet. .rodata size is 10 less than "base dump". In .text, we notice that up to now, printf(mesg) was translated to puts(mesg). I suppose that it is done because mesg has a fixed size AND is terminated by '\n'.
+Effectively, the second printf has a variable size string in argument (a number can be several digit long) and is translated by a printf. Moreover when removing '\n' from mesg, printf remains printf.
+My guess is that when a pointer is used instead of an array, the compiler can not deduce these two conditions, so printf is not translated in puts.
+Just before jumping to the first printf, the string is first stored in r3 then moved to r0.
+With O1, the string is immediately stored in r0.
+
