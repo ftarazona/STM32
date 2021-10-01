@@ -5,13 +5,14 @@ LD		= $(PREFIX)gcc
 DB		= gdb-multiarch
 
 CFLAGS	= -g -O2
-TARGET_ARCH	= -mthumb -mcpu=cortex-m4
+FPUFLAGS	= -mfloat-abi=hard -mfpu=fpv4-sp-d16
+TARGET_ARCH	= -mthumb -mcpu=cortex-m4 $(FPUFLAGS)
 
 ASFLAGS	= -g -O2
 TARGET_MACH	= $(TARGET_ARCH)
 
-LDFLAGS	= -g
-LDLIBS	= -lm
+LDSCRIPT	= ld_ram.lds
+LDFLAGS	= -g -T $(LDSCRIPT) -nostdlib
 
 OBJS	= main.o stubs.o
 DEPS	= $(patsubst %.o, %.dep, $(OBJS))
