@@ -1,3 +1,6 @@
+#include "fibo.h"
+
 int main(void)	{
-	while(1);
+	fibo(8);
+	return 0;
 }
