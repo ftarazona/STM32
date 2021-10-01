@@ -9,7 +9,7 @@ _start:
 	ldr r0, =_stack
 	mov sp, r0
 
-	b main
+	bl main
 
 _exit:
 	b _exit
