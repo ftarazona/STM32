@@ -28,3 +28,8 @@ First of all we focus on "base dump" files (const char msg[])
 By disassembling we can see that O0 uses the frame pointer whereas O1 or higher do not. O1 pushes more registers (r4, r5, r6, lr) in order to reduce the number of instructions required. O0 uses less registers to process, so it has more instructions to do in order to free some required registers.
 O2 adds a text.startup subsection, but the content of the code remains identical to O1.
 Os (speed optim) pushes even more registers, so that it doesn't have to decrement the stack pointer on instruction 1c.
+
+Now we focus on "static dump" (static const char msg[])
+For O0, it is identical to "base dump".
+For O1, O2, Os, the section .rodata is removed when static is added. The static variable is visible only in this file. When non-static, maybe the compiler adds some information in .rodata so that when linking, other files can have access to the variable.
+When indicating static, the compiler then know it doesn't have to add this section.
