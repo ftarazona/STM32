@@ -41,3 +41,5 @@ My guess is that when a pointer is used instead of an array, the compiler can no
 Just before jumping to the first printf, the string is first stored in r3 then moved to r0.
 With O1, the string is immediately stored in r0.
 
+Finally we focus on "const2 dump" (const char\* const msg)
+Adding const enables the compiler to translate the first printf with puts.
