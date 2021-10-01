@@ -13,18 +13,19 @@ TARGET_MACH	= $(TARGET_ARCH)
 LDFLAGS	= -g
 LDLIBS	= -lm
 
-OBJS	= 
+OBJS	= main.o stubs.o
 DEPS	= $(patsubst %.o, %.dep, $(OBJS))
 EXE		= main.elf
 
 .PHONY: clean all
 
+vpath %.c src
 vpath %.c libs
 
 all: $(EXE)
 
 $(EXE): $(OBJS)
-	$(LD) $(LDFLAGS) $< -o $@ $(LDLIBS)
+	$(LD) $(LDFLAGS) $^ -o $@ $(LDLIBS)
 
 # %.o : %.c
 # 	$(CC) $(CFLAGS) -c $< -o $@
