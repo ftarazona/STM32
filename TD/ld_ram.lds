@@ -1,4 +1,4 @@
-ENTRY(main)
+ENTRY(_start)
 
 MEMORY	{
 	flash (R) : ORIGIN = 0x08000000, LENGTH = 1M
