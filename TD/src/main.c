@@ -1,11 +1,9 @@
 #include "fibo.h"
 
-int a = 0;
-int b = 0;
-int c = 0;
+#define N 8
 
 int main(void)	{
-	fibo(8);
+	fibo(N);
 
 	while(1);
 }
