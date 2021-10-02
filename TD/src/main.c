@@ -1,8 +1,10 @@
 #include "led.h"
+#include "clocks.h"
 
 #define WAITING_TIME 1000000
 
 int main(void)	{
+	clocks_init();
 	led_init();
 
 	while(1)	{
