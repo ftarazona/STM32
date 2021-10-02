@@ -1,6 +1,8 @@
 #ifndef LED_H
 #define LED_H
 
+#include <stdint.h>
+
 #define RCC_AHB2ENR	(*(volatile uint32_t *)0x4002104c)
 #define GPIOB_MODER	(*(volatile uint32_t *)0x48000400)
 #define GPIOB_BSRR	(*(volatile uint32_t *)0x48000418)
