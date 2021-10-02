@@ -39,7 +39,9 @@ $(EXE): $(OBJS)
 -include $(DEPS)
 
 clean:
+	mv clocks.o clocks.o.bak
 	rm -f $(OBJS)
+	mv clocks.o.bak clocks.o
 
 clean-all: clean
 	rm -f $(EXE)
