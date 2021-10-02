@@ -12,8 +12,15 @@
 #define GPIO_BSRR14_RESET		0b1 << 30
 #define GPIO_BSRR14_SET			0b1 << 14
 
+enum	{
+	LED_OFF,
+	LED_YELLOW,
+	LED_BLUE
+};
+
 void led_init();
 void led_g_on();
 void led_g_off();
+void led(int state);
 
 #endif
