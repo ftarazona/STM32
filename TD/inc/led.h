@@ -1,23 +1,8 @@
 #ifndef LED_H
 #define LED_H
 
-#include <stdint.h>
-
-#define RCC_AHB2ENR	(*(volatile uint32_t *)0x4002104c)
-#define GPIOB_MODER	(*(volatile uint32_t *)0x48000400)
-#define GPIOC_MODER	(*(volatile uint32_t *)0x48000800)
-#define GPIOB_BSRR	(*(volatile uint32_t *)0x48000418)
-#define GPIOC_BSRR	(*(volatile uint32_t *)0x48000818)
-
-#define RCC_GPIOBEN				0b1 << 1
-#define RCC_GPIOCEN				0b1 << 2
-#define GPIO_MODER9_INPUT		0b00 << 18
-#define GPIO_MODER9_OUTPUT 		0b01 << 18
-#define GPIO_MODER14_OUTPUT 	0b01 << 28
-#define GPIO_BSRR9_RESET		0b1 << 25
-#define GPIO_BSRR9_SET			0b1 << 9
-#define GPIO_BSRR14_RESET		0b1 << 30
-#define GPIO_BSRR14_SET			0b1 << 14
+#include "stm32l4xx.h"
+#include "stm32l475xx.h"
 
 enum	{
 	LED_OFF,

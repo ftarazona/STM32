@@ -2,20 +2,20 @@
 
 /* led_init initializes PB14 in output mode */
 void led_init()	{
-	RCC_AHB2ENR |= RCC_GPIOBEN;	//Enables GPIOB clock
-	RCC_AHB2ENR |= RCC_GPIOCEN;	//Enables GPIOC clock
+	SET_BIT(RCC->AHB2ENR, RCC_AHB2ENR_GPIOBEN);
+	SET_BIT(RCC->AHB2ENR, RCC_GPIOCEN);
 	GPIOB_MODER = (GPIOB_MODER & 0xcfffffff) | GPIO_MODER14_OUTPUT; //Puts PB14 in output mode
 	led(LED_OFF);
 }
 
 /* led_g_on turns LED2 on. It uses BSRR for atomicity. */
 void led_g_on()	{
-	GPIOB_BSRR |= GPIO_BSRR14_SET;
+	SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);
 }
 
 /* led_g_off turns LED2 off. It uses BSRR for atomicity. */
 void led_g_off()	{
-	GPIOB_BSRR |= GPIO_BSRR14_RESET;
+	SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);
 }
 
 void led(int state)	{

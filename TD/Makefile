@@ -4,8 +4,9 @@ AS		= $(PREFIX)as
 LD		= $(PREFIX)gcc
 DB		= gdb-multiarch
 
+DFLAGS	= -DSTM32L475xx
 IFLAGS	= -Iinc -ICMSIS/Include -ICMSIS/Device/ST/STM32L4xx/Include
-CFLAGS	= -std=gnu99 $(IFLAGS) -g -O2 -Wall -Wextra -Werror
+CFLAGS	= -std=gnu99 $(DFLAGS) $(IFLAGS) -g -O2 -Wall -Wextra -Werror
 FPUFLAGS	= -mfloat-abi=hard -mfpu=fpv4-sp-d16
 TARGET_ARCH	= -mthumb -mcpu=cortex-m4 $(FPUFLAGS)
 
@@ -37,7 +38,7 @@ $(EXE): $(OBJS)
 # 	$(CC) $(CFLAGS) -c $< -o $@
 
 %.dep : %.c
-	$(CC) $(IFLAGS) -MM $< -MF $@
+	$(CC) $(DFLAGS) $(IFLAGS) -MM $< -MF $@
 
 -include $(DEPS)
 
