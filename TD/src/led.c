@@ -3,7 +3,7 @@
 /* led_init initializes PB14 in output mode */
 void led_init()	{
 	RCC_AHB2ENR |= RCC_GPIOBEN;	//Enables GPIOB clock
-	GPIOB_MODER |= GPIO_MODER14_OUTPUT; //Puts PB14 in output mode
+	GPIOB_MODER = (GPIOB_MODER & 0xcfffffff) | GPIO_MODER14_OUTPUT; //Puts PB14 in output mode
 }
 
 /* led_g_on turns LED2 on. It uses BSRR for atomicity. */
