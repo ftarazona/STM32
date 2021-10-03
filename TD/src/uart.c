@@ -28,3 +28,9 @@ void uart_init()	{
 	SET_BIT(USART->CR1, USART_CR1_TE);
 	SET_BIT(USART->CR1, USART_CR1_RE);
 }
+
+void uart_putchar(uint8_t c)	{
+	while(~(USART->ISR & USART_ISR_TXE));
+
+	USART->TDR = c;
+}
