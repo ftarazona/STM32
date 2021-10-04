@@ -42,3 +42,11 @@ uint8_t uart_getchar()	{
 
 	return USART1->RDR;
 }
+
+void uart_puts(const char * str)	{
+	while(*str != '\0')	{
+		uart_putchar(*str++);
+	}
+	uart_putchar('\r');
+	uart_putchar('\n');
+}
