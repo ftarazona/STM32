@@ -31,18 +31,21 @@ void uart_init()	{
 	SET_BIT(USART1->CR1, USART_CR1_RE);
 }
 
+/* uart_putchar transmits a character. */
 void uart_putchar(uint8_t c)	{
 	while(!(USART1->ISR & USART_ISR_TXE));
 
 	USART1->TDR = c;
 }
 
+/* uart_getchar waits until a character is received and catches it. */
 uint8_t uart_getchar()	{
 	while(!(USART1->ISR & USART_ISR_RXNE));
 
 	return USART1->RDR;
 }
 
+/* uart_puts emits an entire string. */
 void uart_puts(const char * str)	{
 	while(*str != '\0')	{
 		uart_putchar(*str++);
@@ -51,6 +54,7 @@ void uart_puts(const char * str)	{
 	uart_putchar('\n');
 }
 
+/* uart_gets receives a string of a maximum size */
 void uart_gets(char * str, size_t size)	{
 	uint8_t c = 255;
 	size_t i = 0;
@@ -60,4 +64,18 @@ void uart_gets(char * str, size_t size)	{
 		i++;
 	}
 	*str = '\0';
+}
+
+/* print_hex prints emits characters so that a number is eventually
+   written */
+void print_hex(int n)	{
+	if(n == 0)	{ return; }
+	int q = n / 16;
+	int r = n % 16;
+	print_hex(q);
+	if(r < 10)	{
+		uart_putchar('0' + r);
+	} else	{
+		uart_putchar('A' + r - 10);
+	}
 }

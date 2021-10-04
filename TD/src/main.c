@@ -9,10 +9,12 @@ int main(void)	{
 	clocks_init();
 	uart_init();
 
-	char str[20];
+	int checksum = 0;
 
 	while(1)	{
-		uart_gets(str, 20);
-		uart_puts(str);
+		for(int i = 0; i < 32; ++i)	{
+			checksum += uart_getchar();
+		}
+		print_hex(checksum);
 	}
 }
