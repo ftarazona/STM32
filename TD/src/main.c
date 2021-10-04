@@ -10,6 +10,9 @@ int main(void)	{
 	uart_init();
 
 	char str[20];
-	uart_gets(str, 20);
-	uart_puts(str);
+
+	while(1)	{
+		uart_gets(str, 20);
+		uart_puts(str);
+	}
 }
