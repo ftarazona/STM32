@@ -50,3 +50,14 @@ void uart_puts(const char * str)	{
 	uart_putchar('\r');
 	uart_putchar('\n');
 }
+
+void uart_gets(char * str, size_t size)	{
+	uint8_t c = 255;
+	size_t i = 0;
+	while(c != '\r' && c != '\n' && c != '\0' && i < size - 1)	{
+		c = uart_getchar();
+		*str++ = c;
+		i++;
+	}
+	*str = '\0';
+}

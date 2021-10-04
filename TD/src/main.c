@@ -9,5 +9,7 @@ int main(void)	{
 	clocks_init();
 	uart_init();
 
-	uart_puts("Hello world!");
+	char str[20];
+	uart_gets(str, 20);
+	uart_puts(str);
 }
