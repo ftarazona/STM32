@@ -6,9 +6,9 @@ void uart_init()	{
 	//TX/RX initializations
 	SET_BIT(RCC->AHB2ENR, RCC_AHB2ENR_GPIOBEN);
 	GPIOB->MODER = (GPIOB->MODER & GPIO_MODER_MODE6_Msk) | GPIO_MODER_MODER6_1;
-	GPIOB->AFR = (*GPIOB->AFR & GPIO_AFRL_AFSEL6_Msk) | (0x7UL << GPIO_AFRL_AFSEL6_Pos);
+	GPIOB->AFR[0] = (GPIOB->AFR[0] & GPIO_AFRL_AFSEL6_Msk) | (0x7UL << GPIO_AFRL_AFSEL6_Pos);
 	GPIOB->MODER = (GPIOB->MODER & GPIO_MODER_MODE7_Msk) | GPIO_MODER_MODER7_1;
-	GPIOB->AFR = (*GPIOB->AFR & GPIO_AFRL_AFSEL7_Msk) | (0x7UL << GPIO_AFRL_AFSEL7_Pos);
+	GPIOB->AFR[0] = (GPIOB->AFR[0] & GPIO_AFRL_AFSEL7_Msk) | (0x7UL << GPIO_AFRL_AFSEL7_Pos);
 
 	//Enable clock for I/O in port B
 	SET_BIT(RCC->AHB2SMENR, RCC_AHB2SMENR_GPIOBSMEN);
@@ -30,7 +30,7 @@ void uart_init()	{
 }
 
 void uart_putchar(uint8_t c)	{
-	while(~(USART1->ISR & USART_ISR_TXE));
+//	while(~(USART1->ISR & USART_ISR_TXE));
 
-	USART->TDR = c;
+	USART1->TDR = c;
 }
