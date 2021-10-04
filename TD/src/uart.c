@@ -68,9 +68,9 @@ void uart_gets(char * str, size_t size)	{
 
 /* print_hex prints emits characters so that a number is eventually
    written */
-void print_hex(int n)	{
+void print_hex(uint32_t n)	{
 	if(n == 0)	{
-		uart_putchar('\n');
+		return;
 	}
 	int q = n / 16;
 	int r = n % 16;

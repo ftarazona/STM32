@@ -3,18 +3,19 @@
 #include "uart.h"
 #include "stm32l475xx.h"
 
-#define WAITING_TIME 1000000
+#define N_BYTES 500
 
 int main(void)	{
 	clocks_init();
 	uart_init();
 
-	int checksum = 0;
+	int32_t checksum = 0;
 
 	while(1)	{
-		for(int i = 0; i < 32; ++i)	{
+		for(int i = 0; i < N_BYTES; ++i)	{
 			checksum += uart_getchar();
 		}
 		print_hex(checksum);
+		uart_putchar('\n');
 	}
 }

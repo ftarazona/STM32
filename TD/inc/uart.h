@@ -12,6 +12,6 @@ void uart_putchar(uint8_t c);
 uint8_t uart_getchar();
 void uart_puts(const char * str);
 void uart_gets(char * str, size_t size);
-void print_hex(int n);
+void print_hex(uint32_t n);
 
 #endif
