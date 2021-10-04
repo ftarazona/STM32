@@ -11,7 +11,7 @@ void uart_init()	{
 	GPIOB->AFR[0] = (GPIOB->AFR[0] & ~GPIO_AFRL_AFSEL7_Msk) | (0x7UL << GPIO_AFRL_AFSEL7_Pos);
 
 	//Enable clock for I/O in port B
-	SET_BIT(RCC->AHB2SMENR, RCC_AHB2SMENR_GPIOBSMEN);
+	SET_BIT(RCC->APB2ENR, RCC_APB2ENR_USART1EN);
 
 	//Select clock PCLK
 	RCC->CCIPR &= ~RCC_CCIPR_USART1SEL_Msk;
@@ -32,7 +32,7 @@ void uart_init()	{
 }
 
 void uart_putchar(uint8_t c)	{
-//	while(~(USART1->ISR & USART_ISR_TXE));
+	while(~(USART1->ISR & USART_ISR_TXE));
 
 	USART1->TDR = c;
 }
