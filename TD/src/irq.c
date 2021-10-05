@@ -1,3 +1,5 @@
+#include "irq.h"
+
 void *vector_table[] =	{
 	//Stack and reset
 	&_stack,
