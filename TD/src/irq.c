@@ -97,10 +97,10 @@ MAKE_DEFAULT_HANDLER(FPU_IRQHandler)
 
 
 void irq_init(void)	{
-	SCB->VTOR = (uint32_t)&vector_table;
+	SCB->VTOR = (uint32_t)&vector_table << SCB_VTOR_TBLOFF_Pos;
 }
 
-void *vector_table[] =	{
+void *vector_table[N_IRQ] =	{
 	//Stack and reset
 	&_stack,
 	&_start,

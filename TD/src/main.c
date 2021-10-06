@@ -1,5 +1,6 @@
 #include "led.h"
 #include "clocks.h"
+#include "irq.h"
 #include "uart.h"
 #include "stm32l475xx.h"
 
@@ -8,6 +9,7 @@
 int main(void)	{
 	clocks_init();
 	uart_init();
+	irq_init();
 
 	int32_t checksum = 0;
 
