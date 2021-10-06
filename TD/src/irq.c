@@ -97,7 +97,7 @@ MAKE_DEFAULT_HANDLER(FPU_IRQHandler)
 
 
 void irq_init(void)	{
-	SCB->VTOR = (uint32_t)&vector_table << SCB_VTOR_TBLOFF_Pos;
+	SCB->VTOR = (uint32_t)&vector_table;
 }
 
 void *vector_table[N_IRQ] =	{
