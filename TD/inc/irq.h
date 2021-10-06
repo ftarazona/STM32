@@ -8,6 +8,8 @@
 void __attribute__((weak)) xxx_IRQHandler(void)	{\
 	__disable_irq(); while(1); }\
 
+void *vector_table[];
+
 void irq_init(void);
 
 #endif

@@ -4,7 +4,7 @@ AS		= $(PREFIX)as
 LD		= $(PREFIX)gcc
 DB		= gdb-multiarch
 
-DFLAGS	= -DSTM32L475xx
+DFLAGS	= -DSTM32L475xx -D__FPU_PRESENT
 IFLAGS	= -Iinc -ICMSIS/Include -ICMSIS/Device/ST/STM32L4xx/Include
 CFLAGS	= -std=gnu99 $(DFLAGS) $(IFLAGS) -g -O2 -Wall -Wextra -Werror
 FPUFLAGS	= -mfloat-abi=hard -mfpu=fpv4-sp-d16
@@ -16,7 +16,7 @@ TARGET_MACH	= $(TARGET_ARCH)
 LDSCRIPT	= ld_ram.lds
 LDFLAGS	= -g -T $(LDSCRIPT) -nostdlib
 
-OBJS	= crt0.o init.o clocks.o main.o uart.o
+OBJS	= crt0.o init.o clocks.o main.o uart.o irq.o
 DEPS	= $(patsubst %.o, %.dep, $(OBJS))
 EXE		= main.elf
 
