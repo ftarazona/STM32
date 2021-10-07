@@ -9,7 +9,7 @@
 
 int main(void)	{
 	clocks_init();
-	uart_init();
+//	uart_init();
 	button_init();
 	led_init();
 	irq_init();

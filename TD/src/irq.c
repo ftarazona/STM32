@@ -100,6 +100,7 @@ void irq_init(void)	{
 	SCB->VTOR = (uint32_t)&vector_table;
 }
 
+_Alignas(0x80)
 void *vector_table[N_IRQ] =	{
 	//Stack and reset
 	&_stack,
