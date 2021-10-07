@@ -1,5 +1,7 @@
 #include "button.h"
 
+extern volatile int led_toggle_enable;
+
 /* button_init initializes the user button and links it to an IRQ */
 void button_init(void)	{
 	//Initializing the pin PC13
@@ -20,5 +22,6 @@ void button_init(void)	{
 /* The IRQHandler associated to the button toggles the green led. */
 void EXTI15_10_IRQHandler(void)	{
 	SET_BIT(EXTI->PR1, EXTI_PR1_PIF13);
-	led_toggle();
+	led_toggle_enable = !led_toggle_enable;
+	led_g_off();
 }

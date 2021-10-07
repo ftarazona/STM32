@@ -14,7 +14,7 @@ int main(void)	{
 	irq_init();
 	button_init();
 	led_init();
-	timer_init(1 << 31);
+	timer_init(1000000);
 
 	led_g_on();
 	int32_t checksum = 0;

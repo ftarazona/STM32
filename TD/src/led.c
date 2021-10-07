@@ -1,5 +1,7 @@
 #include "led.h"
 
+volatile int led_toggle_enable = 1;
+
 /* led_init initializes PB14 in output mode */
 void led_init()	{
 	SET_BIT(RCC->AHB2ENR, RCC_AHB2ENR_GPIOBEN);

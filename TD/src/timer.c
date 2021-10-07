@@ -1,5 +1,7 @@
 #include "timer.h"
 
+extern volatile int led_toggle_enable;
+
 /* timer init initializes the timer TIM2 and links a IRQ */
 void timer_init(int max_us)	{
 	//Enabling TIM2 on APB1
@@ -8,8 +10,8 @@ void timer_init(int max_us)	{
 	//Reseting the timer
 	TIM2->CNT = 0;
 	TIM2->PSC = 80;
-	TIM2->ARR = max_us << 16;
-	SET_BIT(TIM2->DIER, TIM_DIER_TIE);
+	TIM2->ARR = max_us;
+	SET_BIT(TIM2->DIER, TIM_DIER_UIE);
 	SET_BIT(TIM2->CR1, TIM_CR1_CEN);
 
 	//Enabling the IRQ in NVIC
@@ -17,6 +19,7 @@ void timer_init(int max_us)	{
 }
 
 void TIM2_IRQHandler(void)	{
-	CLEAR_BIT(TIM2->SR, TIM_SR_TIF);
-	led_toggle();
+	CLEAR_BIT(TIM2->SR, TIM_SR_UIF);
+	if(led_toggle_enable)
+		led_toggle();
 }
