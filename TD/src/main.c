@@ -1,8 +1,9 @@
-#include "led.h"
 #include "button.h"
 #include "clocks.h"
 #include "irq.h"
+#include "led.h"
 #include "uart.h"
+#include "timer.h"
 #include "stm32l475xx.h"
 
 #define N_BYTES 500
@@ -13,6 +14,7 @@ int main(void)	{
 	irq_init();
 	button_init();
 	led_init();
+	timer_init(1 << 31);
 
 	led_g_on();
 	int32_t checksum = 0;

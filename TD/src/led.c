@@ -23,6 +23,14 @@ int led_state()	{
 	return GPIOB->ODR & GPIO_ODR_OD14;
 }
 
+void led_toggle()	{
+	if(led_state())	{
+		led_g_off();
+	} else	{
+		led_g_on();
+	}
+}
+
 void led(int state)	{
 	if(state == LED_OFF)	{
 		GPIOC->MODER = (GPIOC->MODER & 0xfff3ffff) | GPIO_MODER_MODER9; //Puts PC9 in input mode (turns both LEDs off)

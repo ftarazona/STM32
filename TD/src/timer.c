@@ -10,6 +10,7 @@ void timer_init(int max_us)	{
 	TIM2->PSC = 80;
 	TIM2->ARR = max_us << 16;
 	SET_BIT(TIM2->DIER, TIM_DIER_TIE);
+	SET_BIT(TIM2->CR1, TIM_CR1_CEN);
 
 	//Enabling the IRQ in NVIC
 	NVIC_EnableIRQ(TIM2_IRQn);
@@ -17,4 +18,5 @@ void timer_init(int max_us)	{
 
 void TIM2_IRQHandler(void)	{
 	CLEAR_BIT(TIM2->SR, TIM_SR_TIF);
+	led_toggle();
 }

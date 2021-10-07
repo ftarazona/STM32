@@ -20,9 +20,5 @@ void button_init(void)	{
 /* The IRQHandler associated to the button toggles the green led. */
 void EXTI15_10_IRQHandler(void)	{
 	SET_BIT(EXTI->PR1, EXTI_PR1_PIF13);
-	if(led_state())	{
-		led_g_off();
-	} else	{
-		led_g_on();
-	}
+	led_toggle();
 }
