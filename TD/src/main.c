@@ -22,6 +22,7 @@ int main(void)	{
 			checksum += uart_getchar();
 		}
 		print_hex(checksum);
+		uart_putchar('\r');
 		uart_putchar('\n');
 	}
 
