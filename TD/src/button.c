@@ -8,11 +8,12 @@ void button_init(void)	{
 	SYSCFG->EXTICR[3] = (SYSCFG->EXTICR[3] & ~SYSCFG_EXTICR4_EXTI13_Msk) | SYSCFG_EXTICR4_EXTI13_PC;
 
 	EXTI->IMR1 |= EXTI_IMR1_IM13;
-	EXTI->EMR1 |= EXTI_EMR1_EM13;
+//	EXTI->EMR1 |= EXTI_EMR1_EM13;
 	EXTI->RTSR1 |= EXTI_RTSR1_RT13;
-	NVIC_EnableIRQ(7);
+	NVIC_EnableIRQ(EXTI15_10_IRQn);
 }
 
-void EXTI1_IRQHandler(void)	{
+void EXTI15_10_IRQHandler(void)	{
+	EXTI->PR1 |= EXTI_PR1_PIF13;
 	led_g_on();
 }

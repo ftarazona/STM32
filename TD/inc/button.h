@@ -7,6 +7,6 @@
 #include "led.h"
 
 void button_init(void);
-void EXTI1_IRQHandler(void);
+void EXTI15_10_IRQHandler(void);
 
 #endif
