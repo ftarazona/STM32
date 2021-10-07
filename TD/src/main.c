@@ -10,10 +10,11 @@
 int main(void)	{
 	clocks_init();
 //	uart_init();
+	irq_init();
 	button_init();
 	led_init();
-	irq_init();
 
+	led_g_on();
 /*	int32_t checksum = 0;
 
 	while(1)	{

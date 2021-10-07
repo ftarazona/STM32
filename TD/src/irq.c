@@ -1,7 +1,7 @@
 #include "irq.h"
 
-extern int _stack, _start;
-
+extern unsigned int _stack;
+extern void _start(void);
 
 MAKE_DEFAULT_HANDLER(NMI_Handler)
 MAKE_DEFAULT_HANDLER(HardFault_Handler)
@@ -97,14 +97,14 @@ MAKE_DEFAULT_HANDLER(FPU_IRQHandler)
 
 
 void irq_init(void)	{
-	SCB->VTOR = (uint32_t)&vector_table;
+	SCB->VTOR = (uint32_t)vector_table;
 }
 
 _Alignas(0x100)
 void *vector_table[N_IRQ] =	{
 	//Stack and reset
 	&_stack,
-	&_start,
+	_start,
 
 	//Internal exceptions
 	NMI_Handler,
