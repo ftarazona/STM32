@@ -13,6 +13,7 @@ enum	{
 void led_init();
 void led_g_on();
 void led_g_off();
+int led_state();
 void led(int state);
 
 #endif

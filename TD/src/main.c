@@ -9,13 +9,13 @@
 
 int main(void)	{
 	clocks_init();
-//	uart_init();
+	uart_init();
 	irq_init();
 	button_init();
 	led_init();
 
 	led_g_on();
-/*	int32_t checksum = 0;
+	int32_t checksum = 0;
 
 	while(1)	{
 		for(int i = 0; i < N_BYTES; ++i)	{
@@ -23,7 +23,7 @@ int main(void)	{
 		}
 		print_hex(checksum);
 		uart_putchar('\n');
-	}*/
+	}
 
 	while(1);
 }

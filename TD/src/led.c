@@ -18,6 +18,11 @@ void led_g_off()	{
 	SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);
 }
 
+/* led_state returns true if led is on, false otherwise */
+int led_state()	{
+	return GPIOB->ODR & GPIO_ODR_OD14;
+}
+
 void led(int state)	{
 	if(state == LED_OFF)	{
 		GPIOC->MODER = (GPIOC->MODER & 0xfff3ffff) | GPIO_MODER_MODER9; //Puts PC9 in input mode (turns both LEDs off)
