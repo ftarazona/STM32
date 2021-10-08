@@ -83,3 +83,7 @@ void matrix_init(void)	{
 
 	active_wait(N_TICKS_DELAY);
 }
+
+void deactivate_rows(void)	{
+	ROW0(0); ROW1(0); ROW2(0); ROW3(0); ROW4(0); ROW5(0); ROW6(0); ROW7(0); 
+}
