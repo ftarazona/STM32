@@ -87,3 +87,21 @@ void matrix_init(void)	{
 void deactivate_rows(void)	{
 	ROW0(0); ROW1(0); ROW2(0); ROW3(0); ROW4(0); ROW5(0); ROW6(0); ROW7(0); 
 }
+
+void activate_row(int row)	{
+	switch(row)	{
+		case 0: ROW0(1); break;
+		case 1: ROW1(1); break;
+		case 2: ROW2(1); break;
+		case 3: ROW3(1); break;
+		case 4: ROW4(1); break;
+		case 5: ROW5(1); break;
+		case 6: ROW6(1); break;
+		case 7: ROW7(1); break;
+		default: break;
+	}
+}
+
+void send_byte(uint8_t val, int bank)	{
+	SB(bank);
+}

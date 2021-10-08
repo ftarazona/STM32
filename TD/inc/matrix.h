@@ -26,5 +26,8 @@
 #define pulse_LAT LAT(0); asm volatile("nop"); LAT(1); asm volatile("nop");
 
 void matrix_init(void);
+void deactivate_row(void);
+void activate_row(int row);
+void send_byte(uint8_t val, int bank);
 
 #endif
