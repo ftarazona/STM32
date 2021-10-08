@@ -82,6 +82,7 @@ void matrix_init(void)	{
 	ROW7(0);
 
 	active_wait(N_TICKS_DELAY);
+	RST(1);
 }
 
 void deactivate_rows(void)	{
@@ -104,4 +105,8 @@ void activate_row(int row)	{
 
 void send_byte(uint8_t val, int bank)	{
 	SB(bank);
+	for(int i = 0; i < 8; ++i)	{
+		SDA(val & (1 << (8 - i)));
+		pulse_SCK();
+	}
 }
