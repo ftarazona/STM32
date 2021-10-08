@@ -6,20 +6,26 @@
 #include "clocks.h"
 #include "irq.h"
 #include "led.h"
+#include "matrix.h"
 #include "uart.h"
 #include "timer.h"
 
+#define RED 0
+#define GREEN 1
+#define BLUE 2
+
 #define N_BYTES 50
-#define START 0x20010000
 
 int main(void)	{
-/*	clocks_init();
+	clocks_init();
 	uart_init();
 	irq_init();
 	button_init();
 	led_init();
 	timer_init(1000000);
+	matrix_init();
 
+	/*
 	led_g_on();
 	int32_t checksum = 0;
 
@@ -32,15 +38,22 @@ int main(void)	{
 		uart_putchar('\n');
 	}
 */
+	
+	int color = RED;
+	rgb_color leds[8];
 
-	memset((int*)0x20010000, 7, N_BYTES);
-	memcpy((int*)0x20010500, (int*)0x20010000, N_BYTES);
-	memset((int*)0x20010100, 0, N_BYTES);
-	memmove((int*)0x20020000, (int*)0x20020200, N_BYTES);
-	memset((int*)0x20010000, 0, N_BYTES);
-	memset((int*)0x20020000, 1, N_BYTES);
-	int cmp = memcmp((int*)0x20010000, (int*)0x20020000, N_BYTES);
-	cmp *= 2;
-
-	while(1);
+	while(1)	{
+		for(int i = 0; i < 8; ++i)	{
+			leds[i].r = color == RED ? i * 30 : 0;
+			leds[i].g = color == GREEN ? i * 30 : 0;
+			leds[i].b = color == BLUE ? i * 30 : 0;
+		}
+		for(int i = 0; i < 1000000; ++i)	{
+			for(int j = 0; j < 8; ++j)	{
+				mat_set_row(j, leds);
+				deactivate_rows();
+			}
+		}
+		color = (color + 1) % 3;
+	}
 }

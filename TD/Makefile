@@ -16,7 +16,7 @@ TARGET_MACH	= $(TARGET_ARCH)
 LDSCRIPT	= ld_ram.lds
 LDFLAGS	= -g -T $(LDSCRIPT) -nostdlib
 
-OBJS	= crt0.o init.o memfuncs.o clocks.o main.o uart.o irq.o led.o button.o timer.o
+OBJS	= crt0.o init.o memfuncs.o clocks.o main.o uart.o irq.o led.o button.o timer.o matrix.o
 DEPS	= $(patsubst %.o, %.dep, $(OBJS))
 EXE		= main.elf
 
