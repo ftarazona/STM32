@@ -23,3 +23,9 @@ void TIM2_IRQHandler(void)	{
 	if(led_toggle_enable)
 		led_toggle();
 }
+
+void active_wait(int n_ticks)	{
+	for(int i = 0; i < n_ticks; ++i)	{
+		asm volatile("nop");
+	}
+}

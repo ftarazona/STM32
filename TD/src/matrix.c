@@ -67,5 +67,19 @@ void matrix_init(void)	{
 	GPIOA->OSPEEDR = (GPIOA->OSPEEDR & ~GPIO_OSPEEDR_OSPEED3_Msk) 
 						| GPIO_OSPEEDR_OSPEED3_1;
 
+	RST(0);
+	LAT(1);
+	SB(1);
+	SCK(0);
+	SDA(0);
+	ROW0(0);
+	ROW1(0);
+	ROW2(0);
+	ROW3(0);
+	ROW4(0);
+	ROW5(0);
+	ROW6(0);
+	ROW7(0);
 
+	active_wait(N_TICKS_DELAY);
 }

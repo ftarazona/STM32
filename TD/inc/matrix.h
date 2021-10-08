@@ -1,22 +1,12 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
-/* Pin functions :
- *  SB	~ PC5
- *  LAT	~ PC4
- *  RST	~ PC3
- *  SCK	~ PB1
- *  SDA	~ PA4
- *  C0	~ PB2
- *  C1	~ PA15
- *  C2	~ PA2
- *  C3	~ PA7
- *  C4	~ PA6
- *  C5	~ PA5
- *  C6	~ PB0
- *  C7	~ PA3 */
 #include <stm32l4xx.h>
 #include <stm32l475xx.h>
+
+#include "timer.h"
+
+#define N_TICKS_DELAY 80000000
 
 #define SB(x)	if(x) {SET_BIT(GPIOC->BSRR, GPIOC_BSRR_BS5);} else {SET_BIT(GPIOC->BSRR, GPIOC_BSRR_BR5);}
 #define LAT(x)	if(x) {SET_BIT(GPIOC->BSRR, GPIOC_BSRR_BS4);} else {SET_BIT(GPIOC->BSRR, GPIOC_BSRR_BR4);}
@@ -31,6 +21,7 @@
 #define ROW5(x)	if(x) {SET_BIT(GPIOA->BSRR, GPIOA_BSRR_BS5);} else {SET_BIT(GPIOA->BSRR, GPIOA_BSRR_BR5);}
 #define ROW6(x)	if(x) {SET_BIT(GPIOB->BSRR, GPIOB_BSRR_BS0);} else {SET_BIT(GPIOB->BSRR, GPIOB_BSRR_BR0);}
 #define ROW7(x)	if(x) {SET_BIT(GPIOA->BSRR, GPIOA_BSRR_BS3);} else {SET_BIT(GPIOA->BSRR, GPIOA_BSRR_BR3);}
+
 void matrix_init(void);
 
 #endif

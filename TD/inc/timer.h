@@ -9,4 +9,6 @@
 void timer_init(int max_us);
 void TIM2_IRQHandler(void);
 
+void active_wait(int n_ticks);
+
 #endif
