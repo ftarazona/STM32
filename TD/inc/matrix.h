@@ -22,6 +22,9 @@
 #define ROW6(x)	if(x) {SET_BIT(GPIOB->BSRR, GPIOB_BSRR_BS0);} else {SET_BIT(GPIOB->BSRR, GPIOB_BSRR_BR0);}
 #define ROW7(x)	if(x) {SET_BIT(GPIOA->BSRR, GPIOA_BSRR_BS3);} else {SET_BIT(GPIOA->BSRR, GPIOA_BSRR_BR3);}
 
+#define pulse_SCK SCK(1); asm volatile("nop"); SCK(0); asm volatile("nop");
+#define pulse_LAT LAT(0); asm volatile("nop"); LAT(1); asm volatile("nop");
+
 void matrix_init(void);
 
 #endif
