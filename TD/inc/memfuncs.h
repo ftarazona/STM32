@@ -1,9 +1,12 @@
 #ifndef MEMFUNCS_H
 #define MEMFUNCS_H
 
-void memset(int *src, int c, size_t n);
-void memcpy(int *dst, int *src, size_t n);
-void memmove(int *dst, int *src, size_t n);
-int memcmp(int *s1, int *s2, size_t n);
+#include <stddef.h>
+#include <stdint.h>
+
+void *memset(void *src, int c, size_t n);
+void *memcpy(void *dst, const void *src, size_t n);
+void *memmove(void *dst, const void *src, size_t n);
+int memcmp(const void *s1, const void *s2, size_t n);
 
 #endif
