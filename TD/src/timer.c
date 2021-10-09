@@ -18,12 +18,14 @@ void timer_init(int max_us)	{
 	NVIC_EnableIRQ(TIM2_IRQn);
 }
 
+/* IRQ Handler called at every overflow of the timer. */
 void TIM2_IRQHandler(void)	{
 	CLEAR_BIT(TIM2->SR, TIM_SR_UIF);
 	if(led_toggle_enable)
 		led_toggle();
 }
 
+/* nop loop */
 void active_wait(int n_ticks)	{
 	for(int i = 0; i < n_ticks; ++i)	{
 		asm volatile("nop");

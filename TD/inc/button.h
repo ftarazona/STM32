@@ -6,7 +6,11 @@
 
 #include "led.h"
 
+/* Initialization. MUST BE CALLED BEFORE ANY BUTTON MANIPULATION */
 void button_init(void);
+
+/* Overwrites the default IRQ Handler for button trigger.
+ * Enables the led toggle. */
 void EXTI15_10_IRQHandler(void);
 
 #endif

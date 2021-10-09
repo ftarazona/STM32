@@ -2,7 +2,7 @@
 
 /* matrix_init intializes every driver pin in output high speed mode. */
 void matrix_init(void)	{
-	//Enabling peripherals
+	//Enabling peripherals' clocks
 	SET_BIT(RCC->AHB2ENR, RCC_AHB2ENR_GPIOAEN);
 	SET_BIT(RCC->AHB2ENR, RCC_AHB2ENR_GPIOBEN);
 	SET_BIT(RCC->AHB2ENR, RCC_AHB2ENR_GPIOCEN);
@@ -87,13 +87,15 @@ void matrix_init(void)	{
 	init_bank0();	//Sets every bit in bank0 to 1.
 }
 
-/* deactivate_rows clears every row. */
+/* deactivate_rows clears every row. Instead of using 8 instructions,
+ * we directly write in BSRRegister */
 void deactivate_rows(void)	{
 	//ROW0(0); ROW1(0); ROW2(0); ROW3(0); ROW4(0); ROW5(0); ROW6(0); ROW7(0);
 	GPIOB->BSRR |= 0x0005 << 16;
 	GPIOA->BSRR |= 0x80ec << 16;
 }
 
+/* activate_row activates a given row */
 void activate_row(int row)	{
 	switch(row)	{
 		case 0: ROW0(1); break;
@@ -108,14 +110,18 @@ void activate_row(int row)	{
 	}
 }
 
+/* send_byte send 8 bit to the DM163 microcontroller, following the
+ * protocol. */
 void send_byte(uint8_t val, int bank)	{
-	SB(bank);
+	SB(bank);	//Select the bank
 	for(int i = 0; i < 8; ++i)	{
 		SDA(val & (1 << (7 - i)));
 		pulse_SCK
 	}
 }
 
+/* mat_set_row transmits the information for the DM163 to set a given
+ * row to the good values given. */
 void mat_set_row(int row, const rgb_color * val)	{
 	for(int i = 0; i < 8; ++i)	{
 		send_byte(val[i].b, 1);
@@ -126,7 +132,8 @@ void mat_set_row(int row, const rgb_color * val)	{
 	activate_row(row);
 }
 
-void init_bank0()	{
+/* init_bank0 sets every bit in BANK0 to 1. */
+void init_bank0(void)	{
 	for(int i = 0; i < 24; ++i)	{
 		send_byte(0xff, 0);
 	}

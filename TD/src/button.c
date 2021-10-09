@@ -2,13 +2,15 @@
 
 extern volatile int led_toggle_enable;
 
-/* button_init initializes the user button and links it to an IRQ */
+/* button_init initializes the user button and links it to an IRQ.
+ * The user button is controlled by pin PC13.
+ * The clock for GPIOC is activated then PC13 is set in input mode.
+ * The falling trigger is then set to activate an external interrupt. */
 void button_init(void)	{
-	//Initializing the pin PC13
 	SET_BIT(RCC->AHB2ENR, RCC_AHB2ENR_GPIOCEN);
 	GPIOC->MODER = (GPIOC->MODER & ~GPIO_MODER_MODE13_Msk);
 
-	//COnfiguring the line for external interrupts
+	//Configuring the line for external interrupts
 	SET_BIT(RCC->APB2ENR, RCC_APB2ENR_SYSCFGEN);
 	SYSCFG->EXTICR[3] = (SYSCFG->EXTICR[3] & ~SYSCFG_EXTICR4_EXTI13_Msk) | SYSCFG_EXTICR4_EXTI13_PC;
 
