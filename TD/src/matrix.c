@@ -124,7 +124,7 @@ void mat_set_row(int row, const rgb_color * val)	{
 
 void init_bank0()	{
 	for(int i = 0; i < 24; ++i)	{
-		send_byte(1, 0);
+		send_byte(0xff, 0);
 	}
 	pulse_LAT
 }

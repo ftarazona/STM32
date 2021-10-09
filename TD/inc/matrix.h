@@ -22,8 +22,8 @@
 #define ROW6(x)	if(x) {SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0);} else {SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0);}
 #define ROW7(x)	if(x) {SET_BIT(GPIOA->BSRR, GPIO_BSRR_BS3);} else {SET_BIT(GPIOA->BSRR, GPIO_BSRR_BR3);}
 
-#define pulse_SCK SCK(1); asm volatile("nop"); SCK(0);
-#define pulse_LAT LAT(0); asm volatile("nop"); LAT(1);
+#define pulse_SCK SCK(1); SCK(0);
+#define pulse_LAT LAT(0); LAT(1);
 
 typedef struct	{
 	uint8_t r;

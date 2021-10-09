@@ -40,13 +40,14 @@ int main(void)	{
 */
 	
 	rgb_color leds[8];
-
-	while(1)	{
+	int row = 0;
 		for(int i = 0; i < 8; ++i)	{
 			leds[i].r = 255;
 			leds[i].g = 0;
 			leds[i].b = 0;
-		}/*	
+		}
+	while(1)	{
+/*	
 		for(int i = 0; i < 1000000; ++i)	{
 			for(int j = 0; j < 8; ++j)	{
 				mat_set_row(j, leds);
@@ -54,7 +55,8 @@ int main(void)	{
 			}
 		}
 		color = (color + 1) % 3;*/
-		mat_set_row(0, leds);
-		deactivate_rows();
+		mat_set_row(row, leds);
+//		deactivate_rows();
+//		row = (row + 1) % 8;
 	}
 }
