@@ -67,6 +67,7 @@ void matrix_init(void)	{
 	GPIOA->OSPEEDR = (GPIOA->OSPEEDR & ~GPIO_OSPEEDR_OSPEED3_Msk) 
 						| GPIO_OSPEEDR_OSPEED3_1;
 
+	//Reseting the led matrix.
 	RST(0);
 	LAT(1);
 	SB(1);
@@ -81,13 +82,16 @@ void matrix_init(void)	{
 	ROW6(0);
 	ROW7(0);
 
-	active_wait(N_TICKS_DELAY);
+	active_wait(N_TICKS_DELAY);	//Waits about 100ms
 	RST(1);
-	init_bank0();
+	init_bank0();	//Sets every bit in bank0 to 1.
 }
 
+/* deactivate_rows clears every row. */
 void deactivate_rows(void)	{
-	ROW0(0); ROW1(0); ROW2(0); ROW3(0); ROW4(0); ROW5(0); ROW6(0); ROW7(0); 
+	//ROW0(0); ROW1(0); ROW2(0); ROW3(0); ROW4(0); ROW5(0); ROW6(0); ROW7(0);
+	GPIOB->BSRR |= 0x0005 << 16;
+	GPIOA->BSRR |= 0x80ec << 16;
 }
 
 void activate_row(int row)	{
