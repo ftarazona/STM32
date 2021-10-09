@@ -16,6 +16,8 @@
 
 #define N_BYTES 50
 
+void test_pixels(void);
+
 int main(void)	{
 	clocks_init();
 //	uart_init();
@@ -25,38 +27,27 @@ int main(void)	{
 //	timer_init(1000000);
 	matrix_init();
 
-	/*
-	led_g_on();
-	int32_t checksum = 0;
+	test_pixels();
+	while(1);
+}
 
-	while(1)	{
-		for(int i = 0; i < N_BYTES; ++i)	{
-			checksum += uart_getchar();
-		}
-		print_hex(checksum);
-		uart_putchar('\r');
-		uart_putchar('\n');
-	}
-*/
-	
+void test_pixels(void)	{
 	rgb_color leds[8];
+	int color = 0;
 	int row = 0;
-		for(int i = 0; i < 8; ++i)	{
-			leds[i].r = 255;
-			leds[i].g = 0;
-			leds[i].b = 0;
-		}
 	while(1)	{
-/*	
-		for(int i = 0; i < 1000000; ++i)	{
+		for(int i = 0; i < 8; ++i)	{
+			leds[i].r = color == RED ? i * 30 : 0;
+			leds[i].g = color == GREEN ? i * 30 : 0;
+			leds[i].b = color == BLUE ? i * 30 : 0;
+		}
+		for(int i = 0; i < 1000; ++i)	{
 			for(int j = 0; j < 8; ++j)	{
 				mat_set_row(j, leds);
 				deactivate_rows();
 			}
 		}
-		color = (color + 1) % 3;*/
+		color = (color + 1) % 3;
 		mat_set_row(row, leds);
-//		deactivate_rows();
-//		row = (row + 1) % 8;
 	}
 }
