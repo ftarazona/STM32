@@ -9,33 +9,33 @@ void matrix_init(void)	{
 
 	//Configuring pins in output mode
 	GPIOC->MODER = (GPIOC->MODER & ~GPIO_MODER_MODE5_Msk) 
-						| GPIO_MODER_MODE5_1;
+						| GPIO_MODER_MODE5_0;
 	GPIOC->MODER = (GPIOC->MODER & ~GPIO_MODER_MODE4_Msk) 
-						| GPIO_MODER_MODE4_1;
+						| GPIO_MODER_MODE4_0;
 	GPIOC->MODER = (GPIOC->MODER & ~GPIO_MODER_MODE3_Msk) 
-						| GPIO_MODER_MODE3_1;
+						| GPIO_MODER_MODE3_0;
 
 	GPIOB->MODER = (GPIOB->MODER & ~GPIO_MODER_MODE1_Msk) 
-						| GPIO_MODER_MODE1_1; 
+						| GPIO_MODER_MODE1_0; 
 	GPIOA->MODER = (GPIOA->MODER & ~GPIO_MODER_MODE4_Msk) 
-						| GPIO_MODER_MODE4_1;
+						| GPIO_MODER_MODE4_0;
 
 	GPIOB->MODER = (GPIOB->MODER & ~GPIO_MODER_MODE2_Msk) 
-						| GPIO_MODER_MODE2_1; 
+						| GPIO_MODER_MODE2_0; 
 	GPIOA->MODER = (GPIOA->MODER & ~GPIO_MODER_MODE15_Msk) 
-						| GPIO_MODER_MODE15_1;
+						| GPIO_MODER_MODE15_0;
 	GPIOA->MODER = (GPIOA->MODER & ~GPIO_MODER_MODE2_Msk) 
-						| GPIO_MODER_MODE2_1;
+						| GPIO_MODER_MODE2_0;
 	GPIOA->MODER = (GPIOA->MODER & ~GPIO_MODER_MODE7_Msk) 
-						| GPIO_MODER_MODE7_1;
+						| GPIO_MODER_MODE7_0;
 	GPIOA->MODER = (GPIOA->MODER & ~GPIO_MODER_MODE6_Msk) 
-						| GPIO_MODER_MODE6_1;
+						| GPIO_MODER_MODE6_0;
 	GPIOA->MODER = (GPIOA->MODER & ~GPIO_MODER_MODE5_Msk) 
-						| GPIO_MODER_MODE5_1;
+						| GPIO_MODER_MODE5_0;
 	GPIOB->MODER = (GPIOB->MODER & ~GPIO_MODER_MODE0_Msk) 
-						| GPIO_MODER_MODE0_1; 
+						| GPIO_MODER_MODE0_0; 
 	GPIOA->MODER = (GPIOA->MODER & ~GPIO_MODER_MODE3_Msk) 
-						| GPIO_MODER_MODE3_1;
+						| GPIO_MODER_MODE3_0;
 
 	//Configuring pins in high speed mode
 	GPIOC->OSPEEDR = (GPIOC->OSPEEDR & ~GPIO_OSPEEDR_OSPEED5_Msk) 
@@ -83,6 +83,7 @@ void matrix_init(void)	{
 
 	active_wait(N_TICKS_DELAY);
 	RST(1);
+	init_bank0();
 }
 
 void deactivate_rows(void)	{
@@ -104,27 +105,26 @@ void activate_row(int row)	{
 }
 
 void send_byte(uint8_t val, int bank)	{
+	SB(bank);
 	for(int i = 0; i < 8; ++i)	{
-		SDA(val & (1 << (8 - i)));
-		pulse_SCK;
+		SDA(val & (1 << (7 - i)));
+		pulse_SCK
 	}
 }
 
 void mat_set_row(int row, const rgb_color * val)	{
-	activate_row(row);
-	SB(bank);
 	for(int i = 0; i < 8; ++i)	{
-		send_byte(val[i].b);
-		send_byte(val[i].g);
-		send_byte(val[i].r);
+		send_byte(val[i].b, 1);
+		send_byte(val[i].g, 1);
+		send_byte(val[i].r, 1);
 	}
-	pulse_LAT;
+	pulse_LAT
+	activate_row(row);
 }
 
 void init_bank0()	{
-	SB(0);
 	for(int i = 0; i < 24; ++i)	{
-		send_byte(1);
+		send_byte(1, 0);
 	}
-	pulse_LAT;
+	pulse_LAT
 }

@@ -18,11 +18,11 @@
 
 int main(void)	{
 	clocks_init();
-	uart_init();
-	irq_init();
-	button_init();
-	led_init();
-	timer_init(1000000);
+//	uart_init();
+//	irq_init();
+//	button_init();
+//	led_init();
+//	timer_init(1000000);
 	matrix_init();
 
 	/*
@@ -39,21 +39,22 @@ int main(void)	{
 	}
 */
 	
-	int color = RED;
 	rgb_color leds[8];
 
 	while(1)	{
 		for(int i = 0; i < 8; ++i)	{
-			leds[i].r = color == RED ? i * 30 : 0;
-			leds[i].g = color == GREEN ? i * 30 : 0;
-			leds[i].b = color == BLUE ? i * 30 : 0;
-		}
+			leds[i].r = 255;
+			leds[i].g = 0;
+			leds[i].b = 0;
+		}/*	
 		for(int i = 0; i < 1000000; ++i)	{
 			for(int j = 0; j < 8; ++j)	{
 				mat_set_row(j, leds);
 				deactivate_rows();
 			}
 		}
-		color = (color + 1) % 3;
+		color = (color + 1) % 3;*/
+		mat_set_row(0, leds);
+		deactivate_rows();
 	}
 }
