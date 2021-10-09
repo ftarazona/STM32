@@ -33,17 +33,14 @@ int main(void)	{
 		leds[i].b = *cur++;
 	}
 
-	const rgb_color * curRow = leds;
 	while(1)	{
-		for(int i = 0; i < 8; ++i)	{
-			display_static_image(curRow + 8 * i);
-		}
+		display_static_image(leds);
 	}
 }
 
 void display_static_image(const rgb_color * leds)	{
 	for(int i = 0; i < 8; ++i)	{
-		mat_set_row(i, leds);
+		mat_set_row(i, leds + i * 8);
 		deactivate_rows();
 	}
 }
