@@ -1,4 +1,5 @@
 #include "uart.h"
+#include "matrix.h"
 
 /* uart_init initializes uart1 to establish a serial communication.
    TX is on PB6, RX is on PB7, both in alternate function 7 */
@@ -30,6 +31,9 @@ void uart_init(int baudrate)	{
 	SET_BIT(USART1->CR1, USART_CR1_UE);	//Enabling UART
 	SET_BIT(USART1->CR1, USART_CR1_TE);	//Enabling transmissions
 	SET_BIT(USART1->CR1, USART_CR1_RE);	//Enabling receptions
+
+	//Enable interrupts for reception
+	SET_BIT(USART1->CR1, USART_CR1_RXNEIE);
 }
 
 /* uart_putchar transmits a character. */
@@ -80,5 +84,38 @@ void print_hex(uint32_t n)	{
 		uart_putchar('0' + r);
 	} else	{
 		uart_putchar('A' + r - 10);
+	}
+}
+
+/* The IRQ Handler reads a character and stores it in the right led
+ * configuration. */
+void USART1_IRQHandler(void)	{
+	/* iByte remembers how many bytes are already read in the current
+	 * frame. */
+	static int iByte = 0;
+	uint8_t c = uart_getchar();
+
+	if(c != 0xff)	{	//The read byte is a led configuration info
+		int iLed = iByte / 3;
+		int iColor = iByte % 3;
+		iByte++;
+		if(iLed >= LED_MATRIX_N_LEDS)	{
+			/* In this case the frame is too long. The byte is dropped
+			 * in order to avoid a memory overflow. */
+			return;
+		}
+		switch(iByte)	{
+			case 0: led_values[iLed].r = c; break;
+			case 1: led_values[iLed].g = c; break;
+			case 2: led_values[iLed].b = c; break;
+			default: break;
+		}
+	} else	{	//End of frame
+		iByte++;
+		if(iByte < 3 * LED_MATRIX_N_LEDS)	{
+			/* In this case the frame is incomplete. The frame is
+			 * completed by zeros */
+
+		}
 	}
 }

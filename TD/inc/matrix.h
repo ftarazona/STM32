@@ -6,9 +6,9 @@
 
 #include "timer.h"
 
-#define LED_MATRIX_WIDTH 8
-#define LED_MATRIX_HEIGHT 8
-#define LED_MATRIX_N_LEDS LED_MATRIX_WIDTH * LED_MATRIX_HEIGHT
+#define LED_MATRIX_N_ROWS 8
+#define LED_MATRIX_N_COLS 8
+#define LED_MATRIX_N_LEDS LED_MATRIX_N_ROWS * LED_MATRIX_N_COLS
 
 #define N_TICKS_DELAY 100000
 
@@ -36,6 +36,7 @@ typedef struct	{
 	uint8_t b;
 } rgb_color;
 
+/* the array is in bss, therefore no need to initialize it*/
 rgb_color led_values[LED_MATRIX_N_LEDS];
 
 /* Initialization. MUST BE CALLED BEFORE ANY LED MATRIX MANIPULATION

@@ -26,4 +26,6 @@ void uart_gets(char * str, size_t size);
 /* prints a 32-bit hexadecimal value. */
 void print_hex(uint32_t n);
 
+void USART1_IRQHandler(void);
+
 #endif
