@@ -20,7 +20,7 @@ int main(void)	{
 //	button_init();
 //	led_init();
 	matrix_init();
-	timer_init(TIMER_SECOND / 500);
+	timer_init(TIMER_SECOND / 1000);
 
 	while(1)	{
 		if(timer_triggered())	{
