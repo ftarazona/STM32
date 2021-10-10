@@ -2,6 +2,7 @@
 #include "matrix.h"
 
 static int received = 0;
+static int overrun = 0;
 static uint8_t character = 0;
 
 /* uart_init initializes uart1 to establish a serial communication.
@@ -96,6 +97,10 @@ void print_hex(uint32_t n)	{
  * In case no character was received, nothing is written in c. 
  * Returns -1 if an override occured. */
 int uart_received(uint8_t * c)	{
+	if(overrun)	{ 
+		overrun = 0;
+		return -1; 
+	}
 	if(received)	{
 		*c = character;
 		received = 0;
@@ -108,6 +113,10 @@ int uart_received(uint8_t * c)	{
 /* The IRQ Handler reads a character and stores it in the right led
  * configuration. */
 void USART1_IRQHandler(void)	{
-	character = uart_getchar();
-	received = 1;
+	if(USART1->ISR & USART_ISR_RXNE)	{
+		character = USART1->RDR;
+		received = 1;
+	} else	{
+		overrun = 1;
+	}
 }
