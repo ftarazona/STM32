@@ -40,9 +40,6 @@ typedef struct	{
 	uint8_t b;
 } rgb_color;
 
-/* the array is in bss, therefore no need to initialize it*/
-rgb_color led_values[LED_MATRIX_N_LEDS];
-
 /* Initialization. MUST BE CALLED BEFORE ANY LED MATRIX MANIPULATION
  * */
 void matrix_init(void);

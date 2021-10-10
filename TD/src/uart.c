@@ -91,41 +91,5 @@ void print_hex(uint32_t n)	{
 /* The IRQ Handler reads a character and stores it in the right led
  * configuration. */
 void USART1_IRQHandler(void)	{
-	/* iByte remembers how many bytes are already read in the current
-	 * frame. */
-	static int iByte = 0;
-	uint8_t c = uart_getchar();
-
-	if(c != 0xff)	{	//The read byte is a led configuration info
-		int iLed = iByte / 3;
-		int iColor = iByte % 3;
-		iByte++;
-		if(iLed >= LED_MATRIX_N_LEDS)	{
-			/* In this case the frame is too long. The byte is dropped
-			 * in order to avoid a memory overflow. */
-			return;
-		}
-		switch(iColor)	{
-			case 0: led_values[iLed].r = c; break;
-			case 1: led_values[iLed].g = c; break;
-			case 2: led_values[iLed].b = c; break;
-			default: break;
-		}
-	} else	{	//Beginning of frame
-		if(iByte < 3 * LED_MATRIX_N_LEDS)	{
-			/* In this case the frame is incomplete. The frame is
-			 * completed by zeros */
-			for(int i = iByte; i < 3 * LED_MATRIX_N_LEDS; ++i)	{
-				int iLed = i / 3;
-				int iColor = i % 3;
-				switch(iColor)	{
-					case 0: led_values[iLed].r = c; break;
-					case 1: led_values[iLed].g = c; break;
-					case 2: led_values[iLed].b = c; break;
-					default: break;
-				}
-			}
-		}
-		iByte = 0;
-	}
+	
 }
