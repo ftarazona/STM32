@@ -16,7 +16,7 @@
 int main(void)	{
 	clocks_init();
 	irq_init();
-//	uart_init(BAUD_RATE);
+	uart_init(BAUD_RATE);
 //	button_init();
 //	led_init();
 	led_values[0].r = 255;
