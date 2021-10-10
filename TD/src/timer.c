@@ -19,7 +19,7 @@ void timer_init(int max_us)	{
 	NVIC_EnableIRQ(TIM2_IRQn);
 }
 
-int timer_triggered()	{
+int timer_triggered(void)	{
 	if(timerTriggered)	{
 		timerTriggered = 0;
 		return 1;

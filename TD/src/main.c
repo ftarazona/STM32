@@ -23,5 +23,15 @@ int main(void)	{
 	matrix_init();
 	timer_init(TIMER_SECOND / 60);
 
-	while(1)	{}
+	uint8_t c = 0;
+	int ret_uart_received = 0;
+
+	while(1)	{
+		ret_uart_received = uart_received(&c);
+		if(ret_uart_received > 0)	{
+			update_image(c);
+		} else if(ret_uart_received)	{
+			
+		}
+	}
 }
