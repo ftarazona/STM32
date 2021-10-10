@@ -185,3 +185,8 @@ int update_image(uint8_t val)	{
 		return -1;
 	}
 }
+
+/* void_image sets every remaining bit of the buffer to 0 */
+void set_image(void)	{
+	while(!(update_image(0)));
+}
