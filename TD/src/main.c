@@ -15,12 +15,13 @@
 
 int main(void)	{
 	clocks_init();
-	uart_init(BAUD_RATE);
 	irq_init();
+//	uart_init(BAUD_RATE);
 //	button_init();
 //	led_init();
-	timer_init(TIMER_SECOND / 30);
+	led_values[0].r = 255;
 	matrix_init();
+	timer_init(TIMER_SECOND / 60);
 
-	while(1);
+	while(1)	{}
 }

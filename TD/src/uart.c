@@ -35,6 +35,7 @@ void uart_init(int baudrate)	{
 	//Enable interrupts for reception
 	SET_BIT(USART1->CR1, USART_CR1_RXNEIE);
 	NVIC_EnableIRQ(USART1_IRQn);
+	NVIC_SetPriority(USART1_IRQn, 10);
 }
 
 /* uart_putchar transmits a character. */
