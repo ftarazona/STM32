@@ -3,6 +3,7 @@
 .cpu cortex-m4
 .thumb
 
+.thumb_func 
 .global _start
 
 /* _start is the entry point (cf. ld_ram.lds).
