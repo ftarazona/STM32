@@ -95,7 +95,7 @@ void print_hex(uint32_t n)	{
 /* received_character returns 1 if a character was received, 0 otherwise
  * In case no character was received, nothing is written in c. 
  * Returns -1 if an override occured. */
-uint8_t uart_received(uint8_t * c)	{
+int uart_received(uint8_t * c)	{
 	if(received)	{
 		*c = character;
 		received = 0;
