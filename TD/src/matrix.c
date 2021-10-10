@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include "matrix.h"
 
 static rgb_color buffer1[LED_MATRIX_N_LEDS];
@@ -173,10 +174,10 @@ void load_image(void)	{
  * Returns -1 if attempt to write in a full buffer. */
 int update_image(uint8_t val)	{
 	if(iLED < LED_MATRIX_N_LEDS * 3)	{
-		switch(i % 3)	{
-			case RED	: currentBuffer[i / 3].r = val; break;
-			case GREEN	: currentBuffer[i / 3].g = val; break;
-			case BLUE	: currentBuffer[i / 3].b = val; break;
+		switch(iLED % 3)	{
+			case RED	: currentBuffer[iLED / 3].r = val; break;
+			case GREEN	: currentBuffer[iLED / 3].g = val; break;
+			case BLUE	: currentBuffer[iLED / 3].b = val; break;
 			default		: break;
 		}
 		iLED++;
