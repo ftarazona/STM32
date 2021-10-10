@@ -19,10 +19,23 @@ int main(void)	{
 	irq_init();
 //	button_init();
 //	led_init();
-//	timer_init(TIMER_PERIOD);
+	timer_init(TIMER_PERIOD);
 	matrix_init();
 
+	uint8_t c;
+	int ret_uart_received = 0;
+
 	while(1)	{
-		display_image();
+		ret_uart_received = uart_received(&c);
+		if(ret_uart_received > 0)	{
+			if(c != 0xff)	{
+				update_image(c);
+			}
+		} else if(ret_uart_received < 0)	{
+			c = 0x00;
+			do	{
+				ret_uart_received = uart_received(&c);
+			} while(ret_uart_received < 0 || c != 0xff);
+		}
 	}
 }
