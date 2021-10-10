@@ -10,6 +10,10 @@
 #define LED_MATRIX_N_COLS 8
 #define LED_MATRIX_N_LEDS LED_MATRIX_N_ROWS * LED_MATRIX_N_COLS
 
+#define RED 0
+#define GREEN 1
+#define BLUE 2
+
 #define N_TICKS_DELAY 100000
 
 #define SB(x)	if(x) {SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS5);} else {SET_BIT(GPIOC->BSRR, GPIO_BSRR_BR5);}
@@ -64,7 +68,7 @@ void load_image(void);
 /* Updates information about next image to display.
  *  val is the value to write. The writing follows this order :
  *  led0 r, led0 g, led0 b, led1 r, ... */
-void update_image(int val);
+int update_image(uint8_t val);
 /* Fills the remaining leds of the current image to 0 */
 void set_image(void);
 

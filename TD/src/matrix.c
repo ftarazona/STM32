@@ -3,7 +3,7 @@
 static rgb_color buffer1[LED_MATRIX_N_LEDS];
 static rgb_color buffer2[LED_MATRIX_N_LEDS];
 static rgb_color * currentBuffer = NULL;
-static int iLed = 0;
+static int iLED = 0;
 
 
 /* matrix_init intializes every driver pin in output high speed mode. */
@@ -155,7 +155,7 @@ void display_image(void)	{
 	}
 }
 
-/* load_image loads the next image from buffer.
+/* load_image loads the next image from buffer and sets iLED to 0.
  * It switches the pointer to the array not currently pointed.
  * The previous buffer is not automatically cleared, it has to be
  * erased by calling set_image */
@@ -164,5 +164,24 @@ void load_image(void)	{
 		currentBuffer = buffer2;
 	} else	{
 		currentBuffer = buffer1;
+	}
+	iLED = 0;
+}
+
+/* update_image writes the value given in the buffer.
+ * Returns 1 if the buffer is full. 
+ * Returns -1 if attempt to write in a full buffer. */
+int update_image(uint8_t val)	{
+	if(iLED < LED_MATRIX_N_LEDS * 3)	{
+		switch(i % 3)	{
+			case RED	: currentBuffer[i / 3].r = val; break;
+			case GREEN	: currentBuffer[i / 3].g = val; break;
+			case BLUE	: currentBuffer[i / 3].b = val; break;
+			default		: break;
+		}
+		iLED++;
+		return iLED == LED_MATRIX_N_LEDS * 3;
+	} else	{
+		return -1;
 	}
 }
