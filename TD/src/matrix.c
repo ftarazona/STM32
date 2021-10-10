@@ -1,5 +1,11 @@
 #include "matrix.h"
 
+static rgb_color buffer1[LED_MATRIX_N_LEDS];
+static rgb_color buffer2[LED_MATRIX_N_LEDS];
+static rgb_color * currentBuffer = NULL;
+static int iLed = 0;
+
+
 /* matrix_init intializes every driver pin in output high speed mode. */
 void matrix_init(void)	{
 	//Enabling peripherals' clocks
@@ -146,5 +152,17 @@ void display_image(void)	{
 	for(int i = 0; i < LED_MATRIX_N_ROWS; ++i)	{
 		deactivate_rows();
 		mat_set_row(i, led_values + (LED_MATRIX_N_COLS * i));
+	}
+}
+
+/* load_image loads the next image from buffer.
+ * It switches the pointer to the array not currently pointed.
+ * The previous buffer is not automatically cleared, it has to be
+ * erased by calling set_image */
+void load_image(void)	{
+	if(currentBuffer == buffer1)	{
+		currentBuffer = buffer2;
+	} else	{
+		currentBuffer = buffer1;
 	}
 }

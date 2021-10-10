@@ -62,8 +62,10 @@ void display_image(void);
 /* Loads the next image. */
 void load_image(void);
 /* Updates information about next image to display.
- *  i is the ID of the LED to update (i/3 = position, i%3 = color
- *  val is the value to write */
-void update_image(int val, int i);
+ *  val is the value to write. The writing follows this order :
+ *  led0 r, led0 g, led0 b, led1 r, ... */
+void update_image(int val);
+/* Fills the remaining leds of the current image to 0 */
+void set_image(void);
 
 #endif
