@@ -1,8 +1,11 @@
+layout src
+layout regs
+focus cmd
 target ext :2331
 mon endian little
 mon halt
 
-# interface with asm, regs and cmd windows
+#interface with asm, regs and cmd windows
 define split
 	layout split
 	layout asm
@@ -55,3 +58,4 @@ document armex
 ARMv7 Exception entry behavior.
 xPSR, ReturnAddress, LR (R14), R12, r3, R2, R1, and R0
 end
+
