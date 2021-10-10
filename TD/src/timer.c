@@ -1,4 +1,5 @@
 #include "timer.h"
+#include "matrix.h"
 
 extern volatile int led_toggle_enable;
 
@@ -21,8 +22,7 @@ void timer_init(int max_us)	{
 /* IRQ Handler called at every overflow of the timer. */
 void TIM2_IRQHandler(void)	{
 	CLEAR_BIT(TIM2->SR, TIM_SR_UIF);
-	if(led_toggle_enable)
-		led_toggle();
+	display_image();
 }
 
 /* nop loop */

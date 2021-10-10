@@ -1,6 +1,10 @@
 #include "uart.h"
 #include "matrix.h"
 
+static int received = 0;
+static int overrun = 0;
+static uint8_t character = 0;
+
 /* uart_init initializes uart1 to establish a serial communication.
    TX is on PB6, RX is on PB7, both in alternate function 7 */
 void uart_init(int baudrate)	{
@@ -35,6 +39,7 @@ void uart_init(int baudrate)	{
 	//Enable interrupts for reception
 	SET_BIT(USART1->CR1, USART_CR1_RXNEIE);
 	NVIC_EnableIRQ(USART1_IRQn);
+	NVIC_SetPriority(USART1_IRQn, 10);
 }
 
 /* uart_putchar transmits a character. */
@@ -88,8 +93,31 @@ void print_hex(uint32_t n)	{
 	}
 }
 
+/* received_character returns 1 if a character was received, 0 otherwise
+ * In case no character was received, nothing is written in c. 
+ * Returns -1 if an override occured. */
+int uart_received(uint8_t * c)	{
+	if(overrun)	{
+		SET_BIT(USART1->ICR, USART_ICR_ORECF);
+		overrun = 0;
+		return -1; 
+	}
+	if(received)	{
+		*c = character;
+		received = 0;
+		return 1;
+	} else	{
+		return 0;
+	}
+}
+
 /* The IRQ Handler reads a character and stores it in the right led
  * configuration. */
 void USART1_IRQHandler(void)	{
-	
+	if(USART1->ISR & USART_ISR_RXNE)	{
+		character = USART1->RDR;
+		received = 1;
+	} else if(USART1->ISR & USART_ISR_ORE)	{
+		overrun = 1;
+	}
 }

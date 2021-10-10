@@ -11,16 +11,16 @@
 #include "timer.h"
 
 #define BAUD_RATE 38400
-#define TIMER_PERIOD 1000000
+#define TIMER_SECOND 1000000
 
 int main(void)	{
 	clocks_init();
-	uart_init(BAUD_RATE);
 	irq_init();
+	uart_init(BAUD_RATE);
 //	button_init();
 //	led_init();
-	timer_init(TIMER_PERIOD);
 	matrix_init();
+	timer_init(TIMER_SECOND / 60);
 
 	uint8_t c;
 	int ret_uart_received = 0;
