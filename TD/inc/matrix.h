@@ -59,4 +59,11 @@ void mat_set_row(int row, const rgb_color * val);
 /* displays image described by led_values array */
 void display_image(void);
 
+/* Loads the next image. */
+void load_image(void);
+/* Updates information about next image to display.
+ *  i is the ID of the LED to update (i/3 = position, i%3 = color
+ *  val is the value to write */
+void update_image(int val, int i);
+
 #endif
