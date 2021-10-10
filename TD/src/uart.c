@@ -111,8 +111,7 @@ void USART1_IRQHandler(void)	{
 			case 2: led_values[iLed].b = c; break;
 			default: break;
 		}
-	} else	{	//End of frame
-		iByte++;
+	} else	{	//Beginning of frame
 		if(iByte < 3 * LED_MATRIX_N_LEDS)	{
 			/* In this case the frame is incomplete. The frame is
 			 * completed by zeros */
@@ -127,5 +126,6 @@ void USART1_IRQHandler(void)	{
 				}
 			}
 		}
+		iByte = 0;
 	}
 }
