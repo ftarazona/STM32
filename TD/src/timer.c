@@ -1,7 +1,7 @@
 #include "timer.h"
 #include "matrix.h"
 
-extern volatile int led_toggle_enable;
+static int timerTriggered = 0;
 
 /* timer init initializes the timer TIM2 and links a IRQ */
 void timer_init(int max_us)	{
@@ -19,10 +19,19 @@ void timer_init(int max_us)	{
 	NVIC_EnableIRQ(TIM2_IRQn);
 }
 
+int timer_triggered()	{
+	if(timerTriggered)	{
+		timerTriggered = 0;
+		return 1;
+	} else	{
+		return 0;
+	}
+}
+
 /* IRQ Handler called at every overflow of the timer. */
 void TIM2_IRQHandler(void)	{
 	CLEAR_BIT(TIM2->SR, TIM_SR_UIF);
-	display_image();
+	timerTriggered = 1;
 }
 
 /* nop loop */
