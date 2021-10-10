@@ -30,6 +30,8 @@ int main(void)	{
 		if(ret_uart_received > 0)	{
 			if(c != 0xff)	{
 				update_image(c);
+			} else	{
+				reset_image();
 			}
 		} else if(ret_uart_received < 0)	{
 			c = 0x00;
@@ -37,5 +39,11 @@ int main(void)	{
 				ret_uart_received = uart_received(&c);
 			} while(ret_uart_received < 0 || c != 0xff);
 		}
+
+		if(timer_triggered())	{
+			load_image();
+		}
+
+		display_image();
 	}
 }
