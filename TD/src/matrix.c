@@ -152,8 +152,8 @@ void init_bank0(void)	{
  * led_values. */
 void display_image(void)	{
 	for(int i = 0; i < LED_MATRIX_N_ROWS; ++i)	{
-		deactivate_rows();
 		mat_set_row(i, currentImage + (LED_MATRIX_N_COLS * i));
+		deactivate_rows();
 	}
 }
 
