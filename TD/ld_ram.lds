@@ -22,13 +22,13 @@ SECTIONS	{
 		_erodata = . ;
 	} > flash
 
-	.data : {
+	.data ORIGIN(sram1) : AT(ADDR(.rodata) + SIZEOF(.rodata)) {
 		_data = . ;
 		*(.data)
 		_edata = . ;
 	} > sram1
 
-	.bss :	{
+	.bss (ADDR(.data) + SIZEOF(.data)) : AT(ADDR(.data) + SIZEOF(.data)) 	{
 		_bss = . ;
 		*(.bss) *(COM*)
 		_ebss = . ;
@@ -37,4 +37,4 @@ SECTIONS	{
 
 /* The stack begins at the END of sram2 for the stack grows descending */
 _stack = ORIGIN(sram2) + LENGTH(sram2) ;
-
+_data_flash = AT(ADDR(.rodata) + SIZEOF(.rodata)) ;

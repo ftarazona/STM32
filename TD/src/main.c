@@ -13,6 +13,8 @@
 #define BAUD_RATE 38400
 #define TIMER_SECOND 1000000
 
+const char hello[30] = "Hello world !";
+
 int main(void)	{
 	clocks_init();
 	irq_init();
@@ -27,4 +29,5 @@ int main(void)	{
 			display_image();
 		}
 	}
+	uart_puts(hello);
 }
