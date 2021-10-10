@@ -116,6 +116,11 @@ int uart_received(uint8_t * c)	{
 void USART1_IRQHandler(void)	{
 	if(USART1->ISR & USART_ISR_RXNE)	{
 		character = USART1->RDR;
+		if(character != 0xff)	{
+			update_image(character);
+		} else	{
+			load_image();
+		}
 		received = 1;
 	} else if(USART1->ISR & USART_ISR_ORE)	{
 		overrun = 1;
