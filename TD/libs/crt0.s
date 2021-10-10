@@ -17,6 +17,7 @@ _start:
 
 	//Careful here, use bl for returning
 	bl init_bss
+	bl init_data
 
 	bl main
 
