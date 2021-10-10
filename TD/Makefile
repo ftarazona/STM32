@@ -6,7 +6,7 @@ DB		= gdb-multiarch
 
 DFLAGS	= -DSTM32L475xx -D__FPU_PRESENT
 IFLAGS	= -Iinc -ICMSIS/Include -ICMSIS/Device/ST/STM32L4xx/Include
-CFLAGS	= -std=gnu99 $(DFLAGS) $(IFLAGS) -g -O2 -Wall -Wextra -Werror -ffreestanding
+CFLAGS	= -std=gnu99 $(DFLAGS) $(IFLAGS) -g -O1 -Wall -Wextra -Werror -ffreestanding
 FPUFLAGS	= -mfloat-abi=hard -mfpu=fpv4-sp-d16
 TARGET_ARCH	= -mthumb -mcpu=cortex-m4 $(FPUFLAGS)
 
