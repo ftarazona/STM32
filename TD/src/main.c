@@ -22,28 +22,37 @@ int main(void)	{
 	matrix_init();
 	timer_init(TIMER_SECOND / 60);
 
-	uint8_t c;
+	uint8_t c = 0;
 	int ret_uart_received = 0;
+	int image_ready = 0;
+	int i = 0;
 
 	while(1)	{
 		ret_uart_received = uart_received(&c);
 		if(ret_uart_received > 0)	{
+			characters2[i] = c;
+			i = (i + 1) % 200;
 			if(c != 0xff)	{
 				update_image(c);
 			} else	{
+				image_ready = 1;
 				reset_image();
 			}
 		} else if(ret_uart_received < 0)	{
 			c = 0x00;
+			uart_puts("Overrun error detected.");
 			do	{
 				ret_uart_received = uart_received(&c);
 			} while(ret_uart_received < 0 || c != 0xff);
-		}
+		} else	{
+			if(timer_triggered())	{
+				if(image_ready)	{
+					load_image();
+					image_ready = 0;
+				}
+			}
 
-		if(timer_triggered())	{
-			load_image();
+			display_image();
 		}
-
-		display_image();
 	}
 }
