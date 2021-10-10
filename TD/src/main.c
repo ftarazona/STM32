@@ -11,7 +11,7 @@
 #include "timer.h"
 
 #define BAUD_RATE 38400
-#define TIMER_PERIOD 1000000
+#define TIMER_SECOND 1000000
 
 int main(void)	{
 	clocks_init();
@@ -19,10 +19,8 @@ int main(void)	{
 	irq_init();
 //	button_init();
 //	led_init();
-//	timer_init(TIMER_PERIOD);
+	timer_init(TIMER_SECOND / 30);
 	matrix_init();
 
-	while(1)	{
-		display_image();
-	}
+	while(1);
 }
