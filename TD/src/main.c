@@ -10,24 +10,19 @@
 #include "uart.h"
 #include "timer.h"
 
-
-void display_static_image(const rgb_color * leds);
+#define BAUD_RATE 38400
+#define TIMER_PERIOD 1000000
 
 int main(void)	{
 	clocks_init();
-	uart_init(38400);
+	uart_init(BAUD_RATE);
 	irq_init();
 	button_init();
 	led_init();
-	timer_init(1000000);
+	timer_init(TIMER_PERIOD);
 	matrix_init();
 
-	while(1);
-}
-
-void display_static_image(const rgb_color * leds)	{
-	for(int i = 0; i < 8; ++i)	{
-		mat_set_row(i, leds + i * 8);
-		deactivate_rows();
+	while(1)	{
+		display_image();
 	}
 }

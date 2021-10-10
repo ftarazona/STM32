@@ -123,13 +123,13 @@ void send_byte(uint8_t val, int bank)	{
 /* mat_set_row transmits the information for the DM163 to set a given
  * row to the good values given. */
 void mat_set_row(int row, const rgb_color * val)	{
+	activate_row(row);
 	for(int i = 0; i < 8; ++i)	{
 		send_byte(val[i].b, 1);
 		send_byte(val[i].g, 1);
 		send_byte(val[i].r, 1);
 	}
 	pulse_LAT
-	activate_row(row);
 }
 
 /* init_bank0 sets every bit in BANK0 to 1. */
@@ -138,4 +138,12 @@ void init_bank0(void)	{
 		send_byte(0xff, 0);
 	}
 	pulse_LAT
+}
+
+
+void display_image(void)	{
+	for(int i = 0; i < LED_MATRIX_N_ROWS; ++i)	{
+		deactivate_rows();
+		mat_set_row(led_values[LED_MATRIX_N_COLS * i]);
+	}
 }
