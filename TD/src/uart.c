@@ -34,6 +34,7 @@ void uart_init(int baudrate)	{
 
 	//Enable interrupts for reception
 	SET_BIT(USART1->CR1, USART_CR1_RXNEIE);
+	NVIC_EnableIRQ(USART1_IRQn);
 }
 
 /* uart_putchar transmits a character. */
@@ -104,7 +105,7 @@ void USART1_IRQHandler(void)	{
 			 * in order to avoid a memory overflow. */
 			return;
 		}
-		switch(iByte)	{
+		switch(iColor)	{
 			case 0: led_values[iLed].r = c; break;
 			case 1: led_values[iLed].g = c; break;
 			case 2: led_values[iLed].b = c; break;
@@ -115,7 +116,16 @@ void USART1_IRQHandler(void)	{
 		if(iByte < 3 * LED_MATRIX_N_LEDS)	{
 			/* In this case the frame is incomplete. The frame is
 			 * completed by zeros */
-
+			for(int i = iByte; i < 3 * LED_MATRIX_N_LEDS; ++i)	{
+				int iLed = i / 3;
+				int iColor = i % 3;
+				switch(iColor)	{
+					case 0: led_values[iLed].r = c; break;
+					case 1: led_values[iLed].g = c; break;
+					case 2: led_values[iLed].b = c; break;
+					default: break;
+				}
+			}
 		}
 	}
 }

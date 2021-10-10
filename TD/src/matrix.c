@@ -144,6 +144,6 @@ void init_bank0(void)	{
 void display_image(void)	{
 	for(int i = 0; i < LED_MATRIX_N_ROWS; ++i)	{
 		deactivate_rows();
-		mat_set_row(led_values[LED_MATRIX_N_COLS * i]);
+		mat_set_row(i, led_values + (LED_MATRIX_N_COLS * i));
 	}
 }

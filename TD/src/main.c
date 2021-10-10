@@ -17,9 +17,9 @@ int main(void)	{
 	clocks_init();
 	uart_init(BAUD_RATE);
 	irq_init();
-	button_init();
-	led_init();
-	timer_init(TIMER_PERIOD);
+//	button_init();
+//	led_init();
+//	timer_init(TIMER_PERIOD);
 	matrix_init();
 
 	while(1)	{
