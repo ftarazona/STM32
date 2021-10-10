@@ -14,13 +14,13 @@ SECTIONS	{
 		_text = . ;
 		*(.text)
 		_etext = . ;
-	} > sram1
+	} > flash
 
 	.rodata :	{
 		_rodata = . ;
 		*(.rodata)
 		_erodata = . ;
-	} > sram1
+	} > flash
 
 	.data : {
 		_data = . ;
