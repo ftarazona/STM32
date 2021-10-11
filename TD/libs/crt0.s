@@ -13,6 +13,7 @@
     don't go dumb. */
 _start:
 	//Careful here, use bl for returning
+	bl init_nvic
 	bl init_bss
 	bl init_data
 

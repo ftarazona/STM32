@@ -44,3 +44,4 @@ SECTIONS	{
 /* The stack begins at the END of sram2 for the stack grows descending */
 _stack = ORIGIN(sram2) + LENGTH(sram2) ;
 _data_flash = ADDR(.rodata) + SIZEOF(.rodata) ;
+_nvic_flash = ORIGIN(flash);
