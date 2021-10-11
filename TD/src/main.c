@@ -23,7 +23,7 @@ int main(void)	{
 	uart_init(BAUD_RATE);
 //	button_init();
 	matrix_init();
-	timer_init(TIMER_SECOND / 400);
+	timer_init(TIMER_SECOND / 600);
 
 	while(1)	{
 		if(timer_triggered())	{

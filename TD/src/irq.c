@@ -101,7 +101,7 @@ void irq_init(void)	{
 }
 
 #ifdef DEBUG
-	_Alignas(0x100);
+	_Alignas(0x100)
 #endif
 void *vector_table[N_IRQ] 
 #ifndef DEBUG
