@@ -13,21 +13,22 @@
 #define BAUD_RATE 38400
 #define TIMER_SECOND 1000000
 
-const char hello[30] = "Hello world !";
+//const char hello[30] = "Hello world !";
 
 int main(void)	{
+	led_init();
+	led_g_on();
 	clocks_init();
 	irq_init();
-	uart_init(BAUD_RATE);
+//	uart_init(BAUD_RATE);
 //	button_init();
-//	led_init();
-	matrix_init();
-	timer_init(TIMER_SECOND / 1000);
+//	matrix_init();
+	timer_init(TIMER_SECOND / 2);
 
 	while(1)	{
 		if(timer_triggered())	{
-			display_image();
+			led_toggle();
 		}
 	}
-	uart_puts(hello);
+//	uart_puts(hello);
 }
