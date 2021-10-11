@@ -10,7 +10,7 @@
 #include "uart.h"
 #include "timer.h"
 
-#define BAUD_RATE 38400
+#define BAUD_RATE 2400
 #define TIMER_SECOND 1000000
 
 //const char hello[30] = "Hello world !";
@@ -20,14 +20,14 @@ int main(void)	{
 	led_g_on();
 	clocks_init();
 	irq_init();
-//	uart_init(BAUD_RATE);
+	uart_init(BAUD_RATE);
 //	button_init();
-//	matrix_init();
-	timer_init(TIMER_SECOND / 2);
+	matrix_init();
+	timer_init(TIMER_SECOND / 400);
 
 	while(1)	{
 		if(timer_triggered())	{
-			led_toggle();
+			display_image();
 		}
 	}
 //	uart_puts(hello);
