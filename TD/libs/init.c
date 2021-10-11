@@ -15,18 +15,23 @@ void init_bss(void)	{
 	memset(&_bss, 0, 4 * (&_ebss - &_bss));
 }
 
+/* init_data copies section .data from flash to ram */
 void init_data(void)	{
 #ifndef DEBUG
 	memcpy(&_data, &_data_flash, 4 * (&_edata - &_data));
 #endif
 }
 
+/* init_nvic copies section .nvic from flash to ram */
 void init_nvic(void)	{
 #ifndef DEBUG
 	memcpy(&_nvic, &_nvic_flash, 4 * (&_envic - &_nvic));
 #endif
 }
 
+/* The .text section is stored in RAM, but XIP is slower than executing
+ * from RAM. A small section .xiptext contains preliminary code that
+ * copies the section .text from flash to RAM */
 __attribute__((section(".xiptext"))) void init_text(void) 	{
 #ifndef DEBUG
 	/* No call to memcpy, which is in RAM.

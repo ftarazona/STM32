@@ -119,10 +119,13 @@ void USART1_IRQHandler(void)	{
 		if(character != 0xff)	{
 			update_image(character);
 		} else	{
+			//In our protocol, 0xff means a new frame starts
 			load_image();
 		}
 		received = 1;
 	} else if(USART1->ISR & USART_ISR_ORE)	{
+		/* If the code does not execute fast enough in comparison to
+		 * the baud rate, it is possible that an overrun occurs. */
 		overrun = 1;
 	}
 }

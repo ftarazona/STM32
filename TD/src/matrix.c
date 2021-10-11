@@ -8,7 +8,8 @@ static rgb_color * currentImage = NULL;
 static int iLED = 0;
 
 
-/* matrix_init intializes every driver pin in output high speed mode. */
+/* matrix_init intializes every driver pin in output high speed mode
+ * and put every led to 0. */
 void matrix_init(void)	{
 	//Enabling peripherals' clocks
 	SET_BIT(RCC->AHB2ENR, RCC_AHB2ENR_GPIOAEN);
@@ -103,7 +104,8 @@ void deactivate_rows(void)	{
 	GPIOA->BSRR |= 0x80ec << 16;
 }
 
-/* activate_row activates a given row */
+/* activate_row activates a given row. It does not affect any other
+ * row. */
 void activate_row(int row)	{
 	switch(row)	{
 		case 0: ROW0(1); break;
