@@ -44,7 +44,7 @@ SECTIONS	{
 		_bss = . ;
 		*(.bss) *(COM*)
 		_ebss = . ;
-	} > sram1 AT> flash
+	} > sram1
 }
 
 /* The stack begins at the END of sram2 for the stack grows descending */

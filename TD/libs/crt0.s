@@ -22,8 +22,8 @@ _start:
 _exit:
 	b _exit
 
+.section .xiptext, "x"
 .thumb_func
-.section .xiptext
 .global _textcpy
 
 _textcpy:
