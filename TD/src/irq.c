@@ -2,6 +2,7 @@
 
 extern unsigned int _stack;
 extern void _start(void);
+extern void _textcpy(void);
 
 MAKE_DEFAULT_HANDLER(NMI_Handler)
 MAKE_DEFAULT_HANDLER(HardFault_Handler)
@@ -100,11 +101,17 @@ void irq_init(void)	{
 	SCB->VTOR = (uint32_t)vector_table;
 }
 
-_Alignas(0x100)
-void *vector_table[N_IRQ] =	{
+#ifdef DEBUG
+	_Alignas(0x100)
+#endif
+void *vector_table[N_IRQ] 
+#ifndef DEBUG
+	__attribute__((section(".nvic"))) 
+#endif	
+	=	{
 	//Stack and reset
 	&_stack,
-	_start,
+	_textcpy,
 
 	//Internal exceptions
 	NMI_Handler,

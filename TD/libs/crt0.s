@@ -3,6 +3,7 @@
 .cpu cortex-m4
 .thumb
 
+.thumb_func 
 .global _start
 
 /* _start is the entry point (cf. ld_ram.lds).
@@ -11,13 +12,21 @@
    Finally, in case main returns, an endless loop assures our controller
     don't go dumb. */
 _start:
-	ldr r0, =_stack
-	mov sp, r0
-
 	//Careful here, use bl for returning
+	bl init_nvic
 	bl init_bss
+	bl init_data
 
 	bl main
 
 _exit:
 	b _exit
+
+.section .xiptext, "x"
+.thumb_func
+.global _textcpy
+
+_textcpy:
+	bl init_text
+	ldr r0, =_start
+	mov pc, r0

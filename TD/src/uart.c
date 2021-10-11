@@ -97,7 +97,8 @@ void print_hex(uint32_t n)	{
  * In case no character was received, nothing is written in c. 
  * Returns -1 if an override occured. */
 int uart_received(uint8_t * c)	{
-	if(overrun)	{ 
+	if(overrun)	{
+		SET_BIT(USART1->ICR, USART_ICR_ORECF);
 		overrun = 0;
 		return -1; 
 	}
@@ -115,8 +116,13 @@ int uart_received(uint8_t * c)	{
 void USART1_IRQHandler(void)	{
 	if(USART1->ISR & USART_ISR_RXNE)	{
 		character = USART1->RDR;
+		if(character != 0xff)	{
+			update_image(character);
+		} else	{
+			load_image();
+		}
 		received = 1;
-	} else	{
+	} else if(USART1->ISR & USART_ISR_ORE)	{
 		overrun = 1;
 	}
 }

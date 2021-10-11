@@ -4,6 +4,7 @@
 static rgb_color buffer1[LED_MATRIX_N_LEDS];
 static rgb_color buffer2[LED_MATRIX_N_LEDS];
 static rgb_color * currentBuffer = NULL;
+static rgb_color * currentImage = NULL;
 static int iLED = 0;
 
 
@@ -151,8 +152,8 @@ void init_bank0(void)	{
  * led_values. */
 void display_image(void)	{
 	for(int i = 0; i < LED_MATRIX_N_ROWS; ++i)	{
+		mat_set_row(i, currentImage + (LED_MATRIX_N_COLS * i));
 		deactivate_rows();
-		mat_set_row(i, led_values + (LED_MATRIX_N_COLS * i));
 	}
 }
 
@@ -161,9 +162,12 @@ void display_image(void)	{
  * The previous buffer is not automatically cleared, it has to be
  * erased by calling set_image */
 void load_image(void)	{
+	set_image();
 	if(currentBuffer == buffer1)	{
+		currentImage = buffer1;
 		currentBuffer = buffer2;
 	} else	{
+		currentImage = buffer2;
 		currentBuffer = buffer1;
 	}
 	iLED = 0;
