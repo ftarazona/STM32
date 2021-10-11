@@ -7,7 +7,7 @@ MEMORY	{
 }
 
 /* _start makes some necessary initializations before executing main. */
-ENTRY(_start)
+ENTRY(_textcpy)
 
 SECTIONS	{
 	.nvic	:	{

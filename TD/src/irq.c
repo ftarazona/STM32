@@ -2,6 +2,7 @@
 
 extern unsigned int _stack;
 extern void _start(void);
+extern void _textcpy(void);
 
 MAKE_DEFAULT_HANDLER(NMI_Handler)
 MAKE_DEFAULT_HANDLER(HardFault_Handler)
@@ -110,7 +111,7 @@ void *vector_table[N_IRQ]
 	=	{
 	//Stack and reset
 	&_stack,
-	_start,
+	_textcpy,
 
 	//Internal exceptions
 	NMI_Handler,

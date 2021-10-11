@@ -21,3 +21,12 @@ _start:
 
 _exit:
 	b _exit
+
+.thumb_func
+.section .xiptext
+.global _textcpy
+
+_textcpy:
+	bl init_text
+	ldr r0, =_start
+	mov pc, r0

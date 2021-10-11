@@ -23,11 +23,11 @@ int main(void)	{
 	uart_init(BAUD_RATE);
 //	button_init();
 	matrix_init();
-	timer_init(TIMER_SECOND / 600);
+	timer_init(TIMER_SECOND / 3);
 
 	while(1)	{
 		if(timer_triggered())	{
-			display_image();
+			led_toggle();
 		}
 	}
 //	uart_puts(hello);

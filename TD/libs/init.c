@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include "memfuncs.h"
 
 /* This file make some initializations before entering main. */
@@ -28,6 +29,12 @@ void init_nvic(void)	{
 
 __attribute__((section(".xiptext"))) void init_text(void) 	{
 #ifndef DEBUG
-	memcpy(&_text, &_text_flash, 4 * (&_etext - &_text));
+	/* No call to memcpy, which is in RAM.
+	 * We could also put memcpy in .xiptext.
+	 * Made this choice so that it is faster if we want to use it then
+	 * */
+	for(int i = 0; i < 4 * (&_etext - &_text); ++i)	{
+		*((uint8_t*)&_text + i) = *((uint8_t*)&_text_flash + i);
+	}
 #endif
 }
