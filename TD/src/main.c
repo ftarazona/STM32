@@ -10,7 +10,7 @@
 #include "uart.h"
 #include "timer.h"
 
-#define BAUD_RATE 2400
+#define BAUD_RATE 38400
 #define TIMER_SECOND 1000000
 
 //const char hello[30] = "Hello world !";

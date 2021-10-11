@@ -100,7 +100,14 @@ void irq_init(void)	{
 	SCB->VTOR = (uint32_t)vector_table;
 }
 
-void *vector_table[N_IRQ] __attribute__((section(".nvic"))) =	{
+#ifdef DEBUG
+	_Alignas(0x100);
+#endif
+void *vector_table[N_IRQ] 
+#ifndef DEBUG
+	__attribute__((section(".nvic"))) 
+#endif	
+	=	{
 	//Stack and reset
 	&_stack,
 	_start,
