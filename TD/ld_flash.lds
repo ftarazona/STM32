@@ -16,19 +16,25 @@ SECTIONS	{
 		_envic = . ;
 	} > sram1
 
-	.text (ORIGIN(flash) + SIZEOF(.nvic)) : AT(LOADADDR(.nvic) + SIZEOF(.nvic))	{
+	.xiptext (LOADADDR(.nvic) + SIZEOF(.nvic)) : AT(LOADADDR(.nvic) + SIZEOF(.nvic))	{
+		_xiptext = . ;
+		*(.xiptext)
+		_exiptext = . ;
+	} > flash
+
+	.text (ADDR(.nvic) + SIZEOF(.nvic)) : AT(LOADADDR(.text) + SIZEOF(.text))	{
 		_text = . ;
 		*(.text)
 		_etext = . ;
-	} > flash
+	} > sram1
 
-	.rodata (ADDR(.text) + SIZEOF(.text)) : AT(LOADADDR(.text) + SIZEOF(.text))	{
+	.rodata (LOADADDR(.xiptext) + SIZEOF(.xiptext)) : AT(LOADADDR(.text) + SIZEOF(.text))	{
 		_rodata = . ;
 		*(.rodata)
 		_erodata = . ;
 	} > flash
 
-	.data (ADDR(.nvic) + SIZEOF(.nvic)) : AT(LOADADDR(.rodata) + SIZEOF(.rodata)) {
+	.data (ADDR(.text) + SIZEOF(.text)) : AT(LOADADDR(.rodata) + SIZEOF(.rodata)) {
 		_data = . ;
 		*(.data)
 		_edata = . ;
@@ -43,5 +49,6 @@ SECTIONS	{
 
 /* The stack begins at the END of sram2 for the stack grows descending */
 _stack = ORIGIN(sram2) + LENGTH(sram2) ;
-_data_flash = ADDR(.rodata) + SIZEOF(.rodata) ;
-_nvic_flash = ORIGIN(flash);
+_data_flash = LOADADDR(.data) ;
+_nvic_flash = LOADADDR(.nvic) ;
+_text_flash = LOADADDR(.text) ;
