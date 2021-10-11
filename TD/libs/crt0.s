@@ -12,9 +12,6 @@
    Finally, in case main returns, an endless loop assures our controller
     don't go dumb. */
 _start:
-	ldr r0, =_stack
-	mov sp, r0
-
 	//Careful here, use bl for returning
 	bl init_bss
 	bl init_data

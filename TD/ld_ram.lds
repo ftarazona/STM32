@@ -10,19 +10,25 @@ MEMORY	{
 ENTRY(_start)
 
 SECTIONS	{
-	.text :	{
+	.nvic ORIGIN(sram1)	: AT(ORIGIN(flash))	{
+		_nvic = . ;
+		*(.nvic)
+		_envic = . ;
+	} > sram1
+
+	.text : AT(LOADADDR(.nvic) + SIZEOF(.nvic))	{
 		_text = . ;
 		*(.text)
 		_etext = . ;
 	} > flash
 
-	.rodata :	{
+	.rodata : AT(LOADADDR(.text) + SIZEOF(.text))	{
 		_rodata = . ;
 		*(.rodata)
 		_erodata = . ;
 	} > flash
 
-	.data ORIGIN(sram1) : AT(ADDR(.rodata) + SIZEOF(.rodata)) {
+	.data (ADDR(.nvic) + SIZEOF(.nvic)) : AT(LOADADDR(.rodata) + SIZEOF(.rodata)) {
 		_data = . ;
 		*(.data)
 		_edata = . ;
