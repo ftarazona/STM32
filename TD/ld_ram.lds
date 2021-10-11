@@ -16,13 +16,13 @@ SECTIONS	{
 		_envic = . ;
 	} > sram1
 
-	.text : AT(LOADADDR(.nvic) + SIZEOF(.nvic))	{
+	.text (ORIGIN(flash) + SIZEOF(.nvic)) : AT(LOADADDR(.nvic) + SIZEOF(.nvic))	{
 		_text = . ;
 		*(.text)
 		_etext = . ;
 	} > flash
 
-	.rodata : AT(LOADADDR(.text) + SIZEOF(.text))	{
+	.rodata (ADDR(.text) + SIZEOF(.text)) : AT(LOADADDR(.text) + SIZEOF(.text))	{
 		_rodata = . ;
 		*(.rodata)
 		_erodata = . ;
