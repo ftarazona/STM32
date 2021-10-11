@@ -4,7 +4,7 @@ AS		= $(PREFIX)as
 LD		= $(PREFIX)gcc
 DB		= gdb-multiarch
 
-DEBUG	= -DDEBUG
+DEBUG	= 
 DFLAGS	= -DSTM32L475xx -D__FPU_PRESENT $(DEBUG)
 IFLAGS	= -Iinc -ICMSIS/Include -ICMSIS/Device/ST/STM32L4xx/Include
 CFLAGS	= -std=gnu99 $(DFLAGS) $(IFLAGS) -g -O1 -Wall -Wextra -Werror -ffreestanding
@@ -14,7 +14,11 @@ TARGET_ARCH	= -mthumb -mcpu=cortex-m4 $(FPUFLAGS)
 ASFLAGS	= -g
 TARGET_MACH	= $(TARGET_ARCH)
 
-LDSCRIPT	= ld_ram.lds
+ifeq ($(DEBUG), DEBUG)
+	LDSCRIPT	= ld_ram.lds
+else
+	LDSCRIPT	= ld_flash.lds
+endif
 LDFLAGS	= -g -T $(LDSCRIPT) -nostdlib
 
 OBJS	= crt0.o init.o memfuncs.o clocks.o main.o uart.o irq.o led.o button.o timer.o matrix.o
