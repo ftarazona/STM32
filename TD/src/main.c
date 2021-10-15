@@ -26,7 +26,7 @@ int main(void)	{
 	timer_init(TIMER_SECOND / 1000);
 
 	for(int i = 0; i < 192; ++i)	{
-		update_image(250);
+		update_image(50);
 	}
 	load_image();
 
