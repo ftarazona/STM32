@@ -139,6 +139,7 @@ void mat_set_row(int row, const rgb_color * val)	{
 		send_byte(val[i].r, 1);
 	}
 	pulse_LAT
+	deactivate_rows();
 	activate_row(row);
 }
 
@@ -155,7 +156,6 @@ void init_bank0(void)	{
 void display_image(void)	{
 	for(int i = 0; i < LED_MATRIX_N_ROWS; ++i)	{
 		mat_set_row(i, currentImage + (LED_MATRIX_N_COLS * i));
-		deactivate_rows();
 	}
 }
 

@@ -26,9 +26,7 @@ int main(void)	{
 	timer_init(TIMER_SECOND / 1000);
 
 	while(1)	{
-		if(timer_triggered())	{
 			display_image();
-		}
 	}
 //	uart_puts(hello);
 }
