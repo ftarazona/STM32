@@ -3,8 +3,8 @@
 
 static rgb_color buffer1[LED_MATRIX_N_LEDS];
 static rgb_color buffer2[LED_MATRIX_N_LEDS];
-static rgb_color * currentBuffer = NULL;
-static rgb_color * currentImage = NULL;
+static rgb_color * currentBuffer = buffer1;
+static rgb_color * currentImage = buffer2;
 static int iLED = 0;
 
 

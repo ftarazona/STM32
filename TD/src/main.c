@@ -20,10 +20,15 @@ int main(void)	{
 	led_g_on();
 	clocks_init();
 	irq_init();
-	uart_init(BAUD_RATE);
+//	uart_init(BAUD_RATE);
 //	button_init();
 	matrix_init();
 	timer_init(TIMER_SECOND / 1000);
+
+	for(int i = 0; i < 192; ++i)	{
+		update_image(250);
+	}
+	load_image();
 
 	while(1)	{
 		display_image();
