@@ -12,54 +12,37 @@ static int iLED = 0;
  * and put every led to 0. */
 void matrix_init(void)	{
 	//Enabling peripherals' clocks
-	SET_BIT(RCC->AHB2ENR, RCC_AHB2ENR_GPIOAEN);
-	SET_BIT(RCC->AHB2ENR, RCC_AHB2ENR_GPIOBEN);
-	SET_BIT(RCC->AHB2ENR, RCC_AHB2ENR_GPIOCEN);
+	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN |
+					RCC_AHB2ENR_GPIOBEN |
+					RCC_AHB2ENR_GPIOCEN;
 
 	//Configuring pins in output mode
-	GPIOC->MODER = (GPIOC->MODER & ~GPIO_MODER_MODE5_Msk) 
-						| GPIO_MODER_MODE5_0;
-	GPIOC->MODER = (GPIOC->MODER & ~GPIO_MODER_MODE4_Msk) 
-						| GPIO_MODER_MODE4_0;
-	GPIOC->MODER = (GPIOC->MODER & ~GPIO_MODER_MODE3_Msk) 
-						| GPIO_MODER_MODE3_0;
-
-	GPIOB->MODER = (GPIOB->MODER & ~GPIO_MODER_MODE1_Msk) 
-						| GPIO_MODER_MODE1_0; 
-	GPIOA->MODER = (GPIOA->MODER & ~GPIO_MODER_MODE4_Msk) 
-						| GPIO_MODER_MODE4_0;
-
-	GPIOB->MODER = (GPIOB->MODER & ~GPIO_MODER_MODE2_Msk) 
-						| GPIO_MODER_MODE2_0; 
-	GPIOA->MODER = (GPIOA->MODER & ~GPIO_MODER_MODE15_Msk) 
-						| GPIO_MODER_MODE15_0;
-	GPIOA->MODER = (GPIOA->MODER & ~GPIO_MODER_MODE2_Msk) 
-						| GPIO_MODER_MODE2_0;
-	GPIOA->MODER = (GPIOA->MODER & ~GPIO_MODER_MODE7_Msk) 
-						| GPIO_MODER_MODE7_0;
-	GPIOA->MODER = (GPIOA->MODER & ~GPIO_MODER_MODE6_Msk) 
-						| GPIO_MODER_MODE6_0;
-	GPIOA->MODER = (GPIOA->MODER & ~GPIO_MODER_MODE5_Msk) 
-						| GPIO_MODER_MODE5_0;
-	GPIOB->MODER = (GPIOB->MODER & ~GPIO_MODER_MODE0_Msk) 
-						| GPIO_MODER_MODE0_0; 
-	GPIOA->MODER = (GPIOA->MODER & ~GPIO_MODER_MODE3_Msk) 
-						| GPIO_MODER_MODE3_0;
+	GPIOA->MODER = (GPIOA->MODER & 0x3ffc000f) |
+					GPIO_MODER_MODE2_0 | GPIO_MODER_MODE3_0 |
+					GPIO_MODER_MODE4_0 | GPIO_MODER_MODE5_0 |
+					GPIO_MODER_MODE6_0 | GPIO_MODER_MODE7_0 |
+					GPIO_MODER_MODE15_0;
+	GPIOB->MODER = (GPIOB->MODER & 0xffffffc0) |
+					GPIO_MODER_MODE0_0 | GPIO_MODER_MODE1_0 |
+					GPIO_MODER_MODE2_0;
+	GPIOC->MODER = (GPIOC->MODER & 0xfffff03f) |
+					GPIO_MODER_MODE3_0 | GPIO_MODER_MODE4_0 |
+					GPIO_MODER_MODE5_0;
 
 	//Configuring pins in high speed mode
-	GPIOC->OSPEEDR |= (3 << GPIO_OSPEEDR_OSPEED5_Pos);
-	GPIOC->OSPEEDR |= (3 << GPIO_OSPEEDR_OSPEED4_Pos) ;
-	GPIOC->OSPEEDR |= (3 << GPIO_OSPEEDR_OSPEED3_Pos) ;
-	GPIOB->OSPEEDR |= (3 << GPIO_OSPEEDR_OSPEED1_Pos) ;
-	GPIOA->OSPEEDR |= (3 << GPIO_OSPEEDR_OSPEED4_Pos) ;
-	GPIOB->OSPEEDR |= (3 << GPIO_OSPEEDR_OSPEED2_Pos) ;
-	GPIOA->OSPEEDR |= (3 << GPIO_OSPEEDR_OSPEED15_Pos) ;
-	GPIOA->OSPEEDR |= (3 << GPIO_OSPEEDR_OSPEED2_Pos) ;
-	GPIOA->OSPEEDR |= (3 << GPIO_OSPEEDR_OSPEED7_Pos) ;
-	GPIOA->OSPEEDR |= (3 << GPIO_OSPEEDR_OSPEED6_Pos) ;
-	GPIOA->OSPEEDR |= (3 << GPIO_OSPEEDR_OSPEED5_Pos) ;
-	GPIOB->OSPEEDR |= (3 << GPIO_OSPEEDR_OSPEED0_Pos) ;
-	GPIOC->OSPEEDR |= (3 << GPIO_OSPEEDR_OSPEED3_Pos) ;
+	GPIOA->OSPEEDR |= 	(3 << GPIO_OSPEEDR_OSPEED2_Pos) |
+						(3 << GPIO_OSPEEDR_OSPEED3_Pos) |
+						(3 << GPIO_OSPEEDR_OSPEED4_Pos) |
+						(3 << GPIO_OSPEEDR_OSPEED5_Pos) |
+						(3 << GPIO_OSPEEDR_OSPEED6_Pos) |
+						(3 << GPIO_OSPEEDR_OSPEED7_Pos) |
+						(3 << GPIO_OSPEEDR_OSPEED15_Pos);
+	GPIOB->OSPEEDR |= 	(3 << GPIO_OSPEEDR_OSPEED0_Pos) |
+						(3 << GPIO_OSPEEDR_OSPEED1_Pos) |
+						(3 << GPIO_OSPEEDR_OSPEED2_Pos);
+	GPIOC->OSPEEDR |= 	(3 << GPIO_OSPEEDR_OSPEED3_Pos) |
+						(3 << GPIO_OSPEEDR_OSPEED4_Pos) |
+						(3 << GPIO_OSPEEDR_OSPEED5_Pos);
 
 	//Reseting the led matrix.
 	RST(0);
@@ -67,14 +50,7 @@ void matrix_init(void)	{
 	SB(1);
 	SCK(0);
 	SDA(0);
-	ROW0(0);
-	ROW1(0);
-	ROW2(0);
-	ROW3(0);
-	ROW4(0);
-	ROW5(0);
-	ROW6(0);
-	ROW7(0);
+	deactivate_rows();
 
 	active_wait(N_TICKS_DELAY);	//Waits about 100ms
 	RST(1);
@@ -84,9 +60,8 @@ void matrix_init(void)	{
 /* deactivate_rows clears every row. Instead of using 8 instructions,
  * we directly write in BSRRegister */
 void deactivate_rows(void)	{
-	//ROW0(0); ROW1(0); ROW2(0); ROW3(0); ROW4(0); ROW5(0); ROW6(0); ROW7(0);
-	GPIOB->BSRR |= 0x0005 << 16;
 	GPIOA->BSRR |= 0x80ec << 16;
+	GPIOB->BSRR |= 0x0005 << 16;
 }
 
 /* activate_row activates a given row. It does not affect any other
@@ -122,7 +97,7 @@ void mat_set_row(int row, const rgb_color * val)	{
 		send_byte(val[i].b, 1);
 		send_byte(val[i].g, 1);
 		send_byte(val[i].r, 1);
-		if(i == 5)
+		if(i == 6)
 			deactivate_rows();
 	}
 	pulse_LAT();
@@ -140,7 +115,10 @@ void init_bank0(void)	{
 /* display_image displays the image described by global object
  * led_values. */
 void display_image(void)	{
-	for(int i = 0; i < 8; ++i)	{
+	for(int i = 0; i < 4; ++i)	{
+		mat_set_row(i, currentImage + (LED_MATRIX_N_COLS * i));
+	}
+	for(int i = 7; i > 3; --i)	{
 		mat_set_row(i, currentImage + (LED_MATRIX_N_COLS * i));
 	}
 }
