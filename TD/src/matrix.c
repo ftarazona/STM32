@@ -47,34 +47,19 @@ void matrix_init(void)	{
 						| GPIO_MODER_MODE3_0;
 
 	//Configuring pins in high speed mode
-	GPIOC->OSPEEDR = (GPIOC->OSPEEDR & ~GPIO_OSPEEDR_OSPEED5_Msk) 
-						| GPIO_OSPEEDR_OSPEED5_1;
-	GPIOC->OSPEEDR = (GPIOC->OSPEEDR & ~GPIO_OSPEEDR_OSPEED4_Msk) 
-						| GPIO_OSPEEDR_OSPEED4_1;
-	GPIOC->OSPEEDR = (GPIOC->OSPEEDR & ~GPIO_OSPEEDR_OSPEED3_Msk) 
-						| GPIO_OSPEEDR_OSPEED3_1;
-
-	GPIOB->OSPEEDR = (GPIOB->OSPEEDR & ~GPIO_OSPEEDR_OSPEED1_Msk) 
-						| GPIO_OSPEEDR_OSPEED1_1; 
-	GPIOA->OSPEEDR = (GPIOA->OSPEEDR & ~GPIO_OSPEEDR_OSPEED4_Msk) 
-						| GPIO_OSPEEDR_OSPEED4_1;
-
-	GPIOB->OSPEEDR = (GPIOB->OSPEEDR & ~GPIO_OSPEEDR_OSPEED2_Msk) 
-						| GPIO_OSPEEDR_OSPEED2_1; 
-	GPIOA->OSPEEDR = (GPIOA->OSPEEDR & ~GPIO_OSPEEDR_OSPEED15_Msk) 
-						| GPIO_OSPEEDR_OSPEED15_1;
-	GPIOA->OSPEEDR = (GPIOA->OSPEEDR & ~GPIO_OSPEEDR_OSPEED2_Msk) 
-						| GPIO_OSPEEDR_OSPEED2_1;
-	GPIOA->OSPEEDR = (GPIOA->OSPEEDR & ~GPIO_OSPEEDR_OSPEED7_Msk) 
-						| GPIO_OSPEEDR_OSPEED7_1;
-	GPIOA->OSPEEDR = (GPIOA->OSPEEDR & ~GPIO_OSPEEDR_OSPEED6_Msk) 
-						| GPIO_OSPEEDR_OSPEED6_1;
-	GPIOA->OSPEEDR = (GPIOA->OSPEEDR & ~GPIO_OSPEEDR_OSPEED5_Msk) 
-						| GPIO_OSPEEDR_OSPEED5_1;
-	GPIOB->OSPEEDR = (GPIOB->OSPEEDR & ~GPIO_OSPEEDR_OSPEED0_Msk) 
-						| GPIO_OSPEEDR_OSPEED0_1; 
-	GPIOA->OSPEEDR = (GPIOA->OSPEEDR & ~GPIO_OSPEEDR_OSPEED3_Msk) 
-						| GPIO_OSPEEDR_OSPEED3_1;
+	GPIOC->OSPEEDR |= (3 << GPIO_OSPEEDR_OSPEED5_Pos);
+	GPIOC->OSPEEDR |= (3 << GPIO_OSPEEDR_OSPEED4_Pos) ;
+	GPIOC->OSPEEDR |= (3 << GPIO_OSPEEDR_OSPEED3_Pos) ;
+	GPIOB->OSPEEDR |= (3 << GPIO_OSPEEDR_OSPEED1_Pos) ;
+	GPIOA->OSPEEDR |= (3 << GPIO_OSPEEDR_OSPEED4_Pos) ;
+	GPIOB->OSPEEDR |= (3 << GPIO_OSPEEDR_OSPEED2_Pos) ;
+	GPIOA->OSPEEDR |= (3 << GPIO_OSPEEDR_OSPEED15_Pos) ;
+	GPIOA->OSPEEDR |= (3 << GPIO_OSPEEDR_OSPEED2_Pos) ;
+	GPIOA->OSPEEDR |= (3 << GPIO_OSPEEDR_OSPEED7_Pos) ;
+	GPIOA->OSPEEDR |= (3 << GPIO_OSPEEDR_OSPEED6_Pos) ;
+	GPIOA->OSPEEDR |= (3 << GPIO_OSPEEDR_OSPEED5_Pos) ;
+	GPIOB->OSPEEDR |= (3 << GPIO_OSPEEDR_OSPEED0_Pos) ;
+	GPIOC->OSPEEDR |= (3 << GPIO_OSPEEDR_OSPEED3_Pos) ;
 
 	//Reseting the led matrix.
 	RST(0);
@@ -126,7 +111,7 @@ void send_byte(uint8_t val, int bank)	{
 	SB(bank);	//Select the bank
 	for(int i = 0; i < 8; ++i)	{
 		SDA(val & (1 << (7 - i)));
-		pulse_SCK
+		pulse_SCK();
 	}
 }
 
@@ -137,10 +122,10 @@ void mat_set_row(int row, const rgb_color * val)	{
 		send_byte(val[i].b, 1);
 		send_byte(val[i].g, 1);
 		send_byte(val[i].r, 1);
+		if(i == 5)
+			deactivate_rows();
 	}
-	deactivate_rows();
-	pulse_LAT
-	deactivate_rows();
+	pulse_LAT();
 	activate_row(row);
 }
 
@@ -149,13 +134,13 @@ void init_bank0(void)	{
 	for(int i = 0; i < 24; ++i)	{
 		send_byte(0xff, 0);
 	}
-	pulse_LAT
+	pulse_LAT();
 }
 
 /* display_image displays the image described by global object
  * led_values. */
 void display_image(void)	{
-	for(int i = 0; i < LED_MATRIX_N_ROWS; ++i)	{
+	for(int i = 0; i < 8; ++i)	{
 		mat_set_row(i, currentImage + (LED_MATRIX_N_COLS * i));
 	}
 }

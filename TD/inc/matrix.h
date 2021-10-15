@@ -30,9 +30,10 @@
 #define ROW6(x)	if(x) {SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0);} else {SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0);}
 #define ROW7(x)	if(x) {SET_BIT(GPIOA->BSRR, GPIO_BSRR_BS3);} else {SET_BIT(GPIOA->BSRR, GPIO_BSRR_BR3);}
 
-#define pulse_SCK SCK(1); SCK(0);
-#define pulse_LAT asm volatile ("nop"); LAT(0); LAT(1);
+#define pulse_SCK() SCK(1); SCK(0)
+#define pulse_LAT() LAT(0); LAT(1)
 
+#define DEACTIVATE_DELAY 0
 /* rgb_color describes the state of 3-color led */
 typedef struct	{
 	uint8_t r;

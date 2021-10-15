@@ -10,7 +10,7 @@
 #include "uart.h"
 #include "timer.h"
 
-#define BAUD_RATE 9600
+#define BAUD_RATE 38400
 #define TIMER_SECOND 1000000
 
 //const char hello[30] = "Hello world !";
@@ -26,7 +26,7 @@ int main(void)	{
 	timer_init(TIMER_SECOND / 1000);
 
 	while(1)	{
-			display_image();
+		display_image();
 	}
 //	uart_puts(hello);
 }
