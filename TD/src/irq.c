@@ -116,7 +116,7 @@ void *vector_table[N_IRQ]
 	=	{
 	//Stack and reset
 	&_stack,
-	_textcpy,
+	&_textcpy,
 
 	//Internal exceptions
 	NMI_Handler,
