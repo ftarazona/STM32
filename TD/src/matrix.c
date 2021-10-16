@@ -115,10 +115,7 @@ void init_bank0(void)	{
 /* display_image displays the image described by global object
  * led_values. */
 void display_image(void)	{
-	for(int i = 0; i < 4; ++i)	{
-		mat_set_row(i, currentImage + (LED_MATRIX_N_COLS * i));
-	}
-	for(int i = 7; i > 3; --i)	{
+	for(int i = 0; i < LED_MATRIX_N_ROWS; ++i)	{
 		mat_set_row(i, currentImage + (LED_MATRIX_N_COLS * i));
 	}
 }

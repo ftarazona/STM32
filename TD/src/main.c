@@ -26,7 +26,10 @@ int main(void)	{
 	timer_init(TIMER_SECOND / 1000);
 
 	while(1)	{
-		display_image();
+		if(timer_triggered())	{
+			display_image();
+			deactivate_rows();
+		}
 	}
 //	uart_puts(hello);
 }
