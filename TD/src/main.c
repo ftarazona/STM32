@@ -9,9 +9,13 @@
 #include "matrix.h"
 #include "uart.h"
 #include "timer.h"
+#include "i2c.h"
 
-#define BAUD_RATE 38400
+#define BAUD_RATE 115200
 #define TIMER_SECOND 1000000
+
+#define RADDR 0xD5
+#define WADDR 0xD4
 
 //const char hello[30] = "Hello world !";
 
@@ -23,12 +27,19 @@ int main(void)	{
 	uart_init(BAUD_RATE);
 //	button_init();
 	matrix_init();
-	timer_init(TIMER_SECOND / 1000);
+	i2c_master_init();
+	timer_init(TIMER_SECOND / 1);
 
+	uart_puts("UART Initialized");
+	uint8_t accel_init[3] = {RADDR, 0x11, 1 << 4};
+	i2c_send(accel_init, 3);
+
+
+	uint8_t data;
 	while(1)	{
 		if(timer_triggered())	{
-			display_image();
-			deactivate_rows();
+			i2c_read(RADDR, 0x23, &data, 1);
+			print_hex(data);
 		}
 	}
 //	uart_puts(hello);

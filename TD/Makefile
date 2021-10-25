@@ -4,7 +4,7 @@ AS		= $(PREFIX)as
 LD		= $(PREFIX)gcc
 DB		= gdb-multiarch
 
-DEBUG	= 
+DEBUG	= -DDEBUG
 DFLAGS	= -DSTM32L475xx -D__FPU_PRESENT $(DEBUG)
 IFLAGS	= -Iinc -ICMSIS/Include -ICMSIS/Device/ST/STM32L4xx/Include
 CFLAGS	= -std=gnu99 $(DFLAGS) $(IFLAGS) -g -Ofast -Wall -Wextra -Werror -ffreestanding
