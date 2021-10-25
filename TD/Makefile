@@ -21,7 +21,7 @@ else
 endif
 LDFLAGS	= -g -T $(LDSCRIPT) -nostdlib
 
-OBJS	= crt0.o init.o memfuncs.o clocks.o main.o uart.o irq.o led.o button.o timer.o matrix.o
+OBJS	= crt0.o init.o memfuncs.o clocks.o main.o uart.o irq.o led.o button.o timer.o matrix.o i2c.o
 DEPS	= $(patsubst %.o, %.dep, $(OBJS))
 EXE		= main.elf
 

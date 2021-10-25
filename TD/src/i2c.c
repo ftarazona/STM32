@@ -5,17 +5,21 @@ void i2c_master_init(uint8_t saddr)	{
 	SET_BIT(RCC->APB1ENR1, RCC_APB1ENR1_I2C1EN);
 
 	//Setting frequency to 400kHz
-	I2C1->I2C_TIMINGR |= 	(200 << I2C_TIMINGR_SCLL_Pos) |
+	I2C1->TIMINGR |= 	(200 << I2C_TIMINGR_SCLL_Pos) |
 							(200 << I2C_TIMINGR_SCLH_Pos);
 
 	//Enabling I2C
-	SET_BIT(I2C1->I2C_CR1, I2C_CR1_PE);
+	SET_BIT(I2C1->CR1, I2C_CR1_PE);
 }
 
-void i2c_send(uint8_t data, uint8_t subaddr)	{
+void i2c_put(uint8_t data)	{
+	while(!(I2C1->ISR & I2C_ISR_TXE));
 
+	I2C1->TXDR = data;
 }
 
-void i2c_recevie(uint8_t data)	{
+uint8_t i2c_get()	{
+	while(!(I2C1->ISR & I2C_ISR_RXNE));
 
+	return I2C1->RXDR & 255;
 }
