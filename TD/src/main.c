@@ -31,7 +31,7 @@ int main(void)	{
 	timer_init(TIMER_SECOND / 1);
 
 	uart_puts("UART Initialized");
-	uint8_t accel_init[3] = {RADDR, 0x11, 1 << 4};
+	uint8_t accel_init[3] = {WADDR, 0x11, 1 << 4};
 	i2c_send(accel_init, 3);
 
 
@@ -39,8 +39,8 @@ int main(void)	{
 	while(1)	{
 		if(timer_triggered())	{
 			i2c_read(RADDR, 0x23, &data, 1);
+			uart_puts("Reading...");
 			print_hex(data);
 		}
 	}
-//	uart_puts(hello);
 }

@@ -31,7 +31,7 @@ void i2c_send(uint8_t* data, int size)	{
 	I2C1->CR2 = (I2C1->CR2 & ~I2C_CR2_NBYTES_Msk) | (size << I2C_CR2_NBYTES_Pos);
 
 	//An automatic STOP will be sent when NBYTES are transferred.
-	SET_BIT(I2C1->CR2, I2C_CR2_AUTOEND);
+	CLEAR_BIT(I2C1->CR2, I2C_CR2_AUTOEND);
 
 	//Setting the slave address
 	I2C1->CR2 = (I2C1->CR2 & ~I2C_CR2_SADD_Msk) | (data[0]);
@@ -44,18 +44,19 @@ void i2c_send(uint8_t* data, int size)	{
 
 
 	for(int i = 1; i < size; ++i)	{
-		while(!(I2C1->ISR & I2C_ISR_TXIS))	{
-			if(I2C1->ISR & I2C_ISR_NACKF)	{ return; }
-		}
+		while(!(I2C1->ISR & I2C_ISR_TXE))
 		I2C1->TXDR = data[i];
 	}
+
+	//STOP condition
+	SET_BIT(I2C1->CR2, I2C_CR2_STOP);
 }
 
 void i2c_read(uint8_t addr, uint8_t subaddr, uint8_t* data, int nbytes)	{
 	CLEAR_BIT(I2C1->CR2, I2C_CR2_AUTOEND);
 
 	//Setting the slave address
-	I2C1->CR2 = (I2C1->CR2 & ~I2C_CR2_SADD_Msk) | (addr);
+	I2C1->CR2 = (I2C1->CR2 & ~I2C_CR2_SADD_Msk) | (addr & ~1);
 
 	//Indicates the master is requesting a write transfer
 	CLEAR_BIT(I2C1->CR2, I2C_CR2_RD_WRN);
@@ -64,20 +65,23 @@ void i2c_read(uint8_t addr, uint8_t subaddr, uint8_t* data, int nbytes)	{
 	SET_BIT(I2C1->CR2, I2C_CR2_START);
 
 	//Transmitting the subaddr
-	while(!(I2C1->ISR & I2C_ISR_TXIS));
+	while(!(I2C1->ISR & I2C_ISR_TXE));
 	I2C1->TXDR = subaddr;
 
 	SET_BIT(I2C1->CR2, ~I2C_CR2_RD_WRN);
 
+	//Setting the slave address in reading mode
+	I2C1->CR2 = (I2C1->CR2 & ~I2C_CR2_SADD_Msk) | (addr);
 	//Indicates the number of bytes to be sent
 	I2C1->CR2 = (I2C1->CR2 & ~I2C_CR2_NBYTES_Msk) | (nbytes << I2C_CR2_NBYTES_Pos);
-	SET_BIT(I2C1->CR2, I2C_CR2_AUTOEND);
 
-	//Emitting a START signal
+	//Emitting a REPEATED START signal
 	SET_BIT(I2C1->CR2, I2C_CR2_START);
 	
 	for(int i = 0; i < nbytes; ++i)	{
 		while(!(I2C1->ISR & I2C_ISR_RXNE));
 		data[i] = I2C1->RXDR;
 	}
+
+	SET_BIT(I2C1->CR2, I2C_CR2_STOP);
 }
