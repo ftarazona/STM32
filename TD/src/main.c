@@ -31,16 +31,23 @@ int main(void)	{
 	timer_init(TIMER_SECOND / 1);
 
 	uart_puts("UART Initialized");
-	uint8_t accel_init[3] = {WADDR, 0x11, 1 << 4};
+	uint8_t accel_init[3] = {WADDR, 0x11, 0x60};
 	i2c_send(accel_init, 3);
+	uint8_t accel_int[3] = {WADDR, 0x0d, 0x02};
+	i2c_send(accel_int, 3);
 
 
+	uint8_t ready = 0;
 	uint8_t data;
 	while(1)	{
 		if(timer_triggered())	{
-			i2c_read(RADDR, 0x23, &data, 1);
+			i2c_read(RADDR, 0x1e, &ready, 1);
 			uart_puts("Reading...");
-			print_hex(data);
+			if(ready & 0x01)	{
+				uart_puts("Data available");
+				i2c_read(RADDR, 0x23, &data, 1);
+				print_hex(data);
+			}
 		}
 	}
 }
