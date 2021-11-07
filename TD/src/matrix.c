@@ -176,22 +176,22 @@ void load_image(void)	{
 /* update_image writes the value given in the buffer.
  * Returns 1 if the buffer is full. 
  * Returns -1 if attempt to write in a full buffer. */
-int update_image(uint8_t val)	{
-	if(iLED < LED_MATRIX_N_LEDS * 3)	{
-		switch(iLED % 3)	{
-			case RED	: currentBuffer[iLED / 3].r = val; break;
-			case GREEN	: currentBuffer[iLED / 3].g = val; break;
-			case BLUE	: currentBuffer[iLED / 3].b = val; break;
-			default		: break;
-		}
-		iLED++;
-		return iLED == LED_MATRIX_N_LEDS * 3;
-	} else	{
-		return -1;
+void update_image(int x, int y, int color, uint8_t val)	{
+	switch(color % 3)	{
+		case RED	: currentBuffer[x][y].r = val; break;
+		case GREEN	: currentBuffer[x][y].g = val; break;
+		case BLUE	: currentBuffer[x][y].b = val; break;
+		default		: break;
 	}
 }
 
 /* void_image sets every remaining bit of the buffer to 0 */
 void set_image(void)	{
-	while(!(update_image(0)));
+	for(int x = 0; x < LED_MATRIX_N_ROWS; ++x)	{
+		for(int y = 0; y < LED_MATRIX_N_COLS; ++y)	{
+			update_image(x, y, RED, 0);
+			update_image(x, y, GREEN, 0);
+			update_image(x, y, BLUE, 0);
+		}
+	}
 }
