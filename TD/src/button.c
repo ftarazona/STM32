@@ -1,7 +1,5 @@
 #include "button.h"
 
-extern volatile int led_toggle_enable;
-
 /* button_init initializes the user button and links it to an IRQ.
  * The user button is controlled by pin PC13.
  * The clock for GPIOC is activated then PC13 is set in input mode.

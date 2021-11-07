@@ -25,7 +25,7 @@ int main(void)	{
 	clocks_init();
 	irq_init();
 	uart_init(BAUD_RATE);
-//	button_init();
+	button_init();
 	matrix_init();
 	i2c_master_init();
 	timer_init(TIMER_SECOND / 1);

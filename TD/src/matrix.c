@@ -5,8 +5,6 @@ static rgb_color buffer1[LED_MATRIX_N_LEDS];
 static rgb_color buffer2[LED_MATRIX_N_LEDS];
 static rgb_color * currentBuffer = buffer1;
 static rgb_color * currentImage = buffer2;
-static int iLED = 0;
-
 
 /* matrix_init intializes every driver pin in output high speed mode
  * and put every led to 0. */
@@ -97,7 +95,7 @@ void mat_set_row(int row, const rgb_color * val)	{
 		send_byte(val[i].b, 1);
 		send_byte(val[i].g, 1);
 		send_byte(val[i].r, 1);
-		if(i == 6)
+		if(i == 5)
 			deactivate_rows();
 	}
 	pulse_LAT();
@@ -125,7 +123,6 @@ void display_image(void)	{
  * The previous buffer is not automatically cleared, it has to be
  * erased by calling set_image */
 void load_image(void)	{
-	set_image();
 	if(currentBuffer == buffer1)	{
 		currentImage = buffer1;
 		currentBuffer = buffer2;
@@ -133,28 +130,23 @@ void load_image(void)	{
 		currentImage = buffer2;
 		currentBuffer = buffer1;
 	}
-	iLED = 0;
 }
 
 /* update_image writes the value given in the buffer.
  * Returns 1 if the buffer is full. 
  * Returns -1 if attempt to write in a full buffer. */
-int update_image(uint8_t val)	{
-	if(iLED < LED_MATRIX_N_LEDS * 3)	{
-		switch(iLED % 3)	{
-			case RED	: currentBuffer[iLED / 3].r = val; break;
-			case GREEN	: currentBuffer[iLED / 3].g = val; break;
-			case BLUE	: currentBuffer[iLED / 3].b = val; break;
-			default		: break;
-		}
-		iLED++;
-		return iLED == LED_MATRIX_N_LEDS * 3;
-	} else	{
-		return -1;
+void update_image(int i, uint8_t val)	{
+	switch(i % 3)	{
+		case RED	: currentBuffer[i / 3].r = val; break;
+		case GREEN	: currentBuffer[i / 3].g = val; break;
+		case BLUE	: currentBuffer[i / 3].b = val; break;
+		default		: break;
 	}
 }
 
 /* void_image sets every remaining bit of the buffer to 0 */
 void set_image(void)	{
-	while(!(update_image(0)));
+	for(int i = 0; i < LED_MATRIX_N_LEDS; ++i)	{
+		update_image(i, 0);
+	}
 }
