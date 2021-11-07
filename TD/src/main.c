@@ -38,15 +38,32 @@ int main(void)	{
 
 
 	uint8_t ready = 0;
-	uint8_t data;
+	uint8_t xl;
+	uint8_t xh;
+	uint8_t yl;
+	uint8_t yh;
+	uint8_t zl;
+	uint8_t zh;
 	while(1)	{
 		if(timer_triggered())	{
 			i2c_read(RADDR, 0x1e, &ready, 1);
-			uart_puts("Reading...");
-			if(ready & 0x01)	{
-				uart_puts("Data available");
-				i2c_read(RADDR, 0x23, &data, 1);
-				print_hex(data);
+			if(ready & 0x02)	{
+				i2c_read(RADDR, 0x22, &xl, 1);
+				i2c_read(RADDR, 0x23, &xh, 1);
+				i2c_read(RADDR, 0x24, &yl, 1);
+				i2c_read(RADDR, 0x25, &yh, 1);
+				i2c_read(RADDR, 0x26, &zl, 1);
+				i2c_read(RADDR, 0x27, &zh, 1);
+				print_hex(xh);
+				print_hex(xl);
+				uart_puts("");
+				print_hex(yh);
+				print_hex(yl);
+				uart_puts("");
+				print_hex(zh);
+				print_hex(zl);
+				uart_puts("");
+				uart_puts("");
 			}
 		}
 	}
