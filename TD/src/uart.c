@@ -114,13 +114,17 @@ int uart_received(uint8_t * c)	{
 /* The IRQ Handler reads a character and stores it in the right led
  * configuration. */
 void USART1_IRQHandler(void)	{
+	static int iLed = 0;
 	if(USART1->ISR & USART_ISR_RXNE)	{
 		character = USART1->RDR;
 		if(character != 0xff)	{
-			update_image(character);
+			if(iLed < 3 * LED_MATRIX_N_LEDS)
+				update_image(iLed, character);
+			iLed++;
 		} else	{
 			//In our protocol, 0xff means a new frame starts
 			load_image();
+			iLed = 0;
 		}
 		received = 1;
 	} else if(USART1->ISR & USART_ISR_ORE)	{
