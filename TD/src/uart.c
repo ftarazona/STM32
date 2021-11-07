@@ -79,13 +79,13 @@ void uart_gets(char * str, size_t size)	{
 
 /* print_hex prints emits characters so that a number is eventually
    written */
-void print_hex(uint32_t n)	{
+void uart_print_hex(uint32_t n)	{
 	if(n == 0)	{
 		return;
 	}
 	int q = n / 16;
 	int r = n % 16;
-	print_hex(q);
+	uart_print_hex(q);
 	if(r < 10)	{
 		uart_putchar('0' + r);
 	} else	{
