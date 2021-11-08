@@ -1,7 +1,10 @@
 #include "timer.h"
 #include "matrix.h"
 
-static int timerTriggered = 0;
+static int i;
+static int displayTriggered;
+static int accelerometerTriggered;
+static int refreshTriggered;
 
 /* timer init initializes the timer TIM2 and links a IRQ */
 void timer_init(int max_us)	{
@@ -19,9 +22,27 @@ void timer_init(int max_us)	{
 	NVIC_EnableIRQ(TIM2_IRQn);
 }
 
-int timer_triggered(void)	{
-	if(timerTriggered)	{
-		timerTriggered = 0;
+int timer_triggered_display(void)	{
+	if(displayTriggered)	{
+		displayTriggered = 0;
+		return 1;
+	} else	{
+		return 0;
+	}
+}
+
+int timer_triggered_accelerometer(void)	{
+	if(accelerometerTriggered)	{
+		accelerometerTriggered = 0;
+		return 1;
+	} else	{
+		return 0;
+	}
+}
+
+int timer_triggered_refresh(void)	{
+	if(refreshTriggered)	{
+		refreshTriggered = 0;
 		return 1;
 	} else	{
 		return 0;
@@ -31,7 +52,15 @@ int timer_triggered(void)	{
 /* IRQ Handler called at every overflow of the timer. */
 void TIM2_IRQHandler(void)	{
 	CLEAR_BIT(TIM2->SR, TIM_SR_UIF);
-	timerTriggered = 1;
+	i++;
+	displayTriggered = 1;
+	if(i % 10 == 0)	{
+		accelerometerTriggered = 1;
+	}
+	if(i % 1000 == 0)	{
+		refreshTriggered = 1;
+		i = 0;
+	}
 }
 
 /* nop loop */

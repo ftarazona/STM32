@@ -1,84 +1,157 @@
-#include "memfuncs.h"
-
-#include "stm32l475xx.h"
-
-#include "button.h"
 #include "clocks.h"
+#include "button.h"
 #include "irq.h"
-#include "led.h"
 #include "matrix.h"
-#include "uart.h"
 #include "timer.h"
 #include "i2c.h"
 #include "random.h"
+#include "uart.h"
+#include "accelerometer.h"
 
-#define BAUD_RATE 115200
-#define TIMER_SECOND 1000000
+#define BAUDRATE 115200
+#define TIMER_FREQUENCY 1000
+#define N_SAMPLES 100
 
-#define RADDR 0xD5
-#define WADDR 0xD4
+#define NONE 0
+#define UP 1
+#define BOTTOM 2
+#define RIGHT 3
+#define LEFT 4
 
-int snake[LED_MATRIX_N_LEDS] = {0};
+static int snake[LED_MATRIX_N_LEDS] = {0};
+static int snake_head = 0;
+static int fruit = 0;
+static int direction = NONE;
+
+void update_direction()	{
+	int16_t x = 0;
+	int16_t y = 0;
+	int16_t z = 0;
+	accelerometer_get(&x, &y, &z);
+	int16_t xAbs = x > 0 ? x : -x;
+	int16_t yAbs = y > 0 ? y : -y;
+	if(xAbs > yAbs)	{
+		direction = x < 0 ? UP : BOTTOM;
+	} else	{
+		direction = y < 0 ? LEFT : RIGHT;
+	}
+}
+
+int next(int x)	{
+	x++;
+	if(x >= LED_MATRIX_N_LEDS)	{ x = 0; }
+	return x;
+}
+
+void generateNewFruit()	{
+	fruit = random_get() & 63;
+	int stop = 0;
+	while(!stop)	{
+		stop = 1;
+		for(int i = 0; i <= snake_head; ++i)	{
+			if(fruit == snake[i])	{
+				fruit++;
+				stop = 0;
+			}
+		}
+	}
+}
+
+int refresh()	{
+	int next_head = snake[snake_head];
+	int overflow = 0;
+
+	switch(direction)	{
+		case UP : 
+			next_head += LED_MATRIX_N_COLS;
+			if(next_head > LED_MATRIX_N_LEDS)
+				overflow = 1;
+			break;
+		case BOTTOM :
+			next_head -= LED_MATRIX_N_COLS;
+			if(next_head < 0)
+				overflow = 1;
+			break;
+		case RIGHT :
+			next_head++;
+			if(next_head % LED_MATRIX_N_COLS == 0)
+				overflow = 1;
+			break;
+		case LEFT :
+			if(next_head % LED_MATRIX_N_COLS == 0)
+				overflow = 1;
+			next_head--;
+			break;
+		default : break;
+	}
+
+	if(overflow)	{ return 1; }
+	for(int i = 0; i <= snake_head; ++i)	{
+		if(snake[i] == next_head)
+			return 2;
+	}
+	if(next_head == fruit)	{
+		snake[++snake_head] = next_head;
+		generateNewFruit();
+	} else	{
+		for(int i = 0; i < snake_head; ++i)	{
+			snake[i] = snake[i + 1];
+		}
+		snake[snake_head] = next_head;
+	}
+	
+	set_image();
+	for(int i = 0; i <= snake_head; ++i)	{
+		update_image(3 * snake[i] + GREEN, 0xff);
+	}
+	update_image(3 * fruit + GREEN, 0xff);
+	update_image(3 * fruit + RED, 0xff);
+	load_image();
+
+	return 0;
+}
 
 int main(void)	{
-	led_init();
-	led_g_on();
 	clocks_init();
-	irq_init();
-	uart_init(BAUD_RATE);
 	button_init();
+	uart_init(BAUDRATE);
+	irq_init();
 	matrix_init();
-	i2c_master_init();
 	random_init();
-	timer_init(TIMER_SECOND / 1000);
+	accelerometer_init();
+	timer_init(TIMER_FREQUENCY);
 
-	uart_puts("UART Initialized");
-	uint8_t accel_init[3] = {WADDR, 0x11, 0x60};
-	i2c_send(accel_init, 3);
-	uint8_t accel_int[3] = {WADDR, 0x0d, 0x02};
-	i2c_send(accel_int, 3);
-	uart_puts("Accelerometer initialized");
-
-	uint8_t ready = 0;
-	uint8_t xl;
-	uint8_t xh;
-	uint8_t yl;
-	uint8_t yh;
-	uint8_t zl;
-	uint8_t zh;
-	uint16_t x;
-	uint16_t y;
-	uint16_t z;
-	int i = 0;
+	int reset = 1;
+	int gameover = 0;
 	while(1)	{
-		if(timer_triggered())	{
-			i++;
-			if(i >= 1000)	{
-				set_image();
-				int random_number = (random_get() & 63) * 3;
-				uart_print_hex(random_number);
-				uart_puts("");
-				update_image(random_number, 0xff);
-				update_image(random_number + 1, 0xff);
-				load_image();
-				i = 0;
+		if(reset)	{
+			snake[0] = 27;
+			for(int i = 1; i < LED_MATRIX_N_LEDS; ++i)	{
+				snake[i] = 0;
+				snake_head = 0;
+				fruit = random_get() & 63;
+				if(fruit == 27)	{ fruit = 45; }
+				reset = 0;
+				gameover = 0;
 			}
-			i2c_read(RADDR, 0x1e, &ready, 1);
-			if(ready & 0x02)	{
-				i2c_read(RADDR, 0x22, &xl, 1);
-				i2c_read(RADDR, 0x23, &xh, 1);
-				i2c_read(RADDR, 0x24, &yl, 1);
-				i2c_read(RADDR, 0x25, &yh, 1);
-				i2c_read(RADDR, 0x26, &zl, 1);
-				i2c_read(RADDR, 0x27, &zh, 1);
-				x = (xh << 8) + xl;
-				y = (yh << 8) + yl;
-				z = (zh << 8) + zl;
-				if(x + y + z == 0)	{
-					x = 1;
-				}
-			}
+		}
+		if(timer_triggered_display())	{
 			display_image();
+		}
+		if(timer_triggered_accelerometer() && !gameover)	{
+			update_direction();
+		}
+		if(timer_triggered_refresh() && !gameover)	{
+			if(refresh())	{
+				gameover = 1;
+				set_image();
+				for(int i = 0; i < LED_MATRIX_N_LEDS; ++i)
+					update_image(3 * i, 0xaa);
+				load_image();
+			}
+		}
+		if(gameover && button_triggered())	{
+			reset = 1;
 		}
 	}
 }

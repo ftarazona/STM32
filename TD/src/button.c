@@ -1,5 +1,7 @@
 #include "button.h"
 
+static int buttonTriggered = 0;
+
 /* button_init initializes the user button and links it to an IRQ.
  * The user button is controlled by pin PC13.
  * The clock for GPIOC is activated then PC13 is set in input mode.
@@ -19,9 +21,14 @@ void button_init(void)	{
 	NVIC_EnableIRQ(EXTI15_10_IRQn);
 }
 
+int button_triggered()	{
+	int ret = buttonTriggered;
+	buttonTriggered = 0;
+	return ret;
+}
+
 /* The IRQHandler associated to the button toggles the green led. */
 void EXTI15_10_IRQHandler(void)	{
 	SET_BIT(EXTI->PR1, EXTI_PR1_PIF13);
-	led_toggle_enable = !led_toggle_enable;
-	led_g_off();
+	buttonTriggered = 1;
 }

@@ -9,7 +9,10 @@
 /* Initialization. MUST BE CALLED BEFORE ANY USE OF TIMER. */
 void timer_init(int max_us);
 
-int timer_triggered(void);
+int timer_triggered_display(void);
+int timer_triggered_accelerometer(void);
+int timer_triggered_refresh(void);
+
 /* Overwrites the default IRQ Handler.
  * If led can be toggled, then it is toggled. */
 void TIM2_IRQHandler(void);

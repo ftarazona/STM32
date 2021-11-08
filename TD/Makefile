@@ -4,7 +4,7 @@ AS		= $(PREFIX)as
 LD		= $(PREFIX)gcc
 DB		= gdb-multiarch
 
-DEBUG	= -DDEBUG
+DEBUG	=
 DFLAGS	= -DSTM32L475xx -D__FPU_PRESENT $(DEBUG)
 IFLAGS	= -Iinc -ICMSIS/Include -ICMSIS/Device/ST/STM32L4xx/Include
 CFLAGS	= -std=gnu99 $(DFLAGS) $(IFLAGS) -g -Ofast -Wall -Wextra -Werror -ffreestanding
@@ -21,7 +21,7 @@ else
 endif
 LDFLAGS	= -g -T $(LDSCRIPT) -nostdlib
 
-OBJS	= crt0.o init.o memfuncs.o clocks.o main.o uart.o irq.o led.o button.o timer.o matrix.o i2c.o random.o
+OBJS	= crt0.o init.o memfuncs.o clocks.o main.o uart.o irq.o led.o button.o timer.o matrix.o i2c.o random.o accelerometer.o
 DEPS	= $(patsubst %.o, %.dep, $(OBJS))
 EXE		= main.elf
 

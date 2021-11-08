@@ -125,6 +125,11 @@ void display_image(void)	{
  * The previous buffer is not automatically cleared, it has to be
  * erased by calling set_image */
 void load_image(void)	{
+	for(int i = 0; i < LED_MATRIX_N_LEDS; ++i)	{
+		currentImage[i].r = 0;
+		currentImage[i].g = 0;
+		currentImage[i].b = 0;
+	}
 	if(currentBuffer == buffer1)	{
 		currentImage = buffer1;
 		currentBuffer = buffer2;
@@ -149,7 +154,8 @@ void update_image(int i, uint8_t val)	{
 /* void_image sets every remaining bit of the buffer to 0 */
 void set_image(void)	{
 	for(int i = 0; i < LED_MATRIX_N_LEDS; ++i)	{
-		update_image(i, 0);
+		currentBuffer[i].r = 0;
+		currentBuffer[i].g = 0;
+		currentBuffer[i].b = 0;
 	}
-	load_image();
 }
