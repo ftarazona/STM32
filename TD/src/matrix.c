@@ -149,4 +149,5 @@ void set_image(void)	{
 	for(int i = 0; i < LED_MATRIX_N_LEDS; ++i)	{
 		update_image(i, 0);
 	}
+	load_image();
 }
