@@ -28,7 +28,6 @@ int main(void)	{
 	while(1)	{
 		if(timer_triggered())	{
 			display_image();
-			deactivate_rows();
 		}
 	}
 //	uart_puts(hello);

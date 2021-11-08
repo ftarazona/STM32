@@ -116,6 +116,8 @@ void display_image(void)	{
 	for(int i = 0; i < LED_MATRIX_N_ROWS; ++i)	{
 		mat_set_row(i, currentImage + (LED_MATRIX_N_COLS * i));
 	}
+	active_wait(30);
+	deactivate_rows();
 }
 
 /* load_image loads the next image from buffer and sets iLED to 0.
