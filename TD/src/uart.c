@@ -118,8 +118,12 @@ void USART1_IRQHandler(void)	{
 	if(USART1->ISR & USART_ISR_RXNE)	{
 		character = USART1->RDR;
 		if(character != 0xff)	{
-			if(iLed < 3 * LED_MATRIX_N_LEDS)
-				update_image(iLed, character);
+			if(iLed < 3 * LED_MATRIX_N_LEDS)	{
+				int row = (iLed / 3) / LED_MATRIX_N_COLS;
+				int col = (iLed / 3) % LED_MATRIX_N_COLS;
+				int color = iLed % 3;
+				update_image((row * LED_MATRIX_N_COLS + (LED_MATRIX_N_COLS - col - 1)) * 3  + color, character);
+			}
 			iLed++;
 		} else	{
 			//In our protocol, 0xff means a new frame starts
