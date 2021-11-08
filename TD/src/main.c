@@ -17,7 +17,7 @@
 #define RADDR 0xD5
 #define WADDR 0xD4
 
-//const char hello[30] = "Hello world !";
+int snake[LED_MATRIX_N_LEDS];
 
 int main(void)	{
 	led_init();
@@ -28,14 +28,14 @@ int main(void)	{
 	button_init();
 	matrix_init();
 	i2c_master_init();
-	timer_init(TIMER_SECOND / 1);
+	timer_init(TIMER_SECOND / 100);
 
 	uart_puts("UART Initialized");
 	uint8_t accel_init[3] = {WADDR, 0x11, 0x60};
 	i2c_send(accel_init, 3);
 	uint8_t accel_int[3] = {WADDR, 0x0d, 0x02};
 	i2c_send(accel_int, 3);
-
+	uart_puts("Accelerometer initialized");
 
 	uint8_t ready = 0;
 	uint8_t xl;
@@ -44,6 +44,9 @@ int main(void)	{
 	uint8_t yh;
 	uint8_t zl;
 	uint8_t zh;
+	uint16_t x;
+	uint16_t y;
+	uint16_t z;
 	while(1)	{
 		if(timer_triggered())	{
 			i2c_read(RADDR, 0x1e, &ready, 1);
@@ -54,16 +57,9 @@ int main(void)	{
 				i2c_read(RADDR, 0x25, &yh, 1);
 				i2c_read(RADDR, 0x26, &zl, 1);
 				i2c_read(RADDR, 0x27, &zh, 1);
-				print_hex(xh);
-				print_hex(xl);
-				uart_puts("");
-				print_hex(yh);
-				print_hex(yl);
-				uart_puts("");
-				print_hex(zh);
-				print_hex(zl);
-				uart_puts("");
-				uart_puts("");
+				x = (xh << 8) + xl;
+				y = (yh << 8) + yl;
+				z = (zh << 8) + zl;
 			}
 		}
 	}
