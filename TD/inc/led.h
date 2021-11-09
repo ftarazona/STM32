@@ -4,7 +4,7 @@
 #include "stm32l4xx.h"
 #include "stm32l475xx.h"
 
-volatile int led_toggle_enable;
+extern volatile int led_toggle_enable;
 
 /* LED3/4 possible states */
 enum	{

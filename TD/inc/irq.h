@@ -10,7 +10,7 @@
 void __attribute__((weak)) xxx_IRQHandler(void)	{\
 	__disable_irq(); while(1); }\
 
-void *vector_table[N_IRQ];
+extern void * vector_table[N_IRQ];
 
 void irq_init(void);
 

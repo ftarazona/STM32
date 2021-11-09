@@ -28,9 +28,6 @@ EXE		= main.elf
 .PHONY: clean all
 
 vpath %.s libs
-vpath %.h inc
-vpath %.h CMSIS/Include
-vpath %.h CMSIS/Device/ST/STM32L4xx/Include
 vpath %.c src
 vpath %.c libs
 
