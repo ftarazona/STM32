@@ -6,8 +6,16 @@ static int displayTriggered;
 static int accelerometerTriggered;
 static int refreshTriggered;
 
+static int displayFreq;
+static int accelerometerFreq;
+static int refreshFreq;
+
 /* timer init initializes the timer TIM2 and links a IRQ */
-void timer_init(int max_us)	{
+void timer_init(int max_us, int display, int accelerometer, int refresh)	{
+	displayFreq = display;
+	accelerometerFreq = accelerometer;
+	refreshFreq = refresh;
+
 	//Enabling TIM2 on APB1
 	SET_BIT(RCC->APB1ENR1, RCC_APB1ENR1_TIM2EN);
 
@@ -53,11 +61,13 @@ int timer_triggered_refresh(void)	{
 void TIM2_IRQHandler(void)	{
 	CLEAR_BIT(TIM2->SR, TIM_SR_UIF);
 	i++;
-	displayTriggered = 1;
-	if(i % 10 == 0)	{
+	if(i % displayFreq == 0)	{
+		displayTriggered = 1;
+	}
+	if(i % accelerometerFreq == 0)	{
 		accelerometerTriggered = 1;
 	}
-	if(i % 1000 == 0)	{
+	if(i % refreshFreq == 0)	{
 		refreshTriggered = 1;
 		i = 0;
 	}

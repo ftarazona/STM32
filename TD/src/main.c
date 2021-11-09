@@ -51,6 +51,7 @@ void generateNewFruit()	{
 		for(int i = 0; i <= snake_head; ++i)	{
 			if(fruit == snake[i])	{
 				fruit++;
+				fruit %= 63;
 				stop = 0;
 			}
 		}
@@ -86,7 +87,7 @@ int refresh()	{
 	}
 
 	if(overflow)	{ return 1; }
-	for(int i = 0; i <= snake_head; ++i)	{
+	for(int i = 1; i <= snake_head; ++i)	{
 		if(snake[i] == next_head)
 			return 2;
 	}
@@ -101,9 +102,10 @@ int refresh()	{
 	}
 	
 	set_image();
-	for(int i = 0; i <= snake_head; ++i)	{
+	for(int i = 0; i < snake_head; ++i)	{
 		update_image(3 * snake[i] + GREEN, 0xff);
 	}
+	update_image(3 * snake[snake_head] + BLUE, 0xff);
 	update_image(3 * fruit + GREEN, 0xff);
 	update_image(3 * fruit + RED, 0xff);
 	load_image();
@@ -119,7 +121,7 @@ int main(void)	{
 	matrix_init();
 	random_init();
 	accelerometer_init();
-	timer_init(TIMER_FREQUENCY);
+	timer_init(TIMER_FREQUENCY, 1, 250, 500);
 
 	int reset = 1;
 	int gameover = 0;

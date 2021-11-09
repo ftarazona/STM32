@@ -7,7 +7,7 @@
 #include "led.h"
 
 /* Initialization. MUST BE CALLED BEFORE ANY USE OF TIMER. */
-void timer_init(int max_us);
+void timer_init(int max_us, int display, int accelerometer, int refresh);
 
 int timer_triggered_display(void);
 int timer_triggered_accelerometer(void);
