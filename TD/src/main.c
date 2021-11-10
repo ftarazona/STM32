@@ -91,6 +91,9 @@ int refresh()	{
 		if(snake[i] == next_head)
 			return 2;
 	}
+	if(snake_head == 63)	{
+		return 3;
+	}
 	if(next_head == fruit)	{
 		snake[++snake_head] = next_head;
 		generateNewFruit();
@@ -144,7 +147,15 @@ int main(void)	{
 			update_direction();
 		}
 		if(timer_triggered_refresh() && !gameover)	{
-			if(refresh())	{
+			int ret = refresh();
+			if(ret == 3)	{
+				gameover = 1;
+				set_image();
+				for(int i = 0; i < LED_MATRIX_N_LEDS * 3; ++i)
+					update_image(i, 0xff);
+				load_image();
+			}
+			else if(ret > 0)	{
 				gameover = 1;
 				set_image();
 				for(int i = 0; i < LED_MATRIX_N_LEDS; ++i)
