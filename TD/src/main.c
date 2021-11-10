@@ -91,11 +91,11 @@ int refresh()	{
 		if(snake[i] == next_head)
 			return 2;
 	}
-	if(snake_head == 63)	{
-		return 3;
-	}
 	if(next_head == fruit)	{
 		snake[++snake_head] = next_head;
+		if(snake_head == 63)	{
+			return 3;
+		}
 		generateNewFruit();
 	} else	{
 		for(int i = 0; i < snake_head; ++i)	{
