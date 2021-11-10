@@ -122,12 +122,12 @@ void USART1_IRQHandler(void)	{
 				int row = (iLed / 3) / LED_MATRIX_N_COLS;
 				int col = (iLed / 3) % LED_MATRIX_N_COLS;
 				int color = iLed % 3;
-				update_image((row * LED_MATRIX_N_COLS + (LED_MATRIX_N_COLS - col - 1)) * 3  + color, character);
+				image_update((row * LED_MATRIX_N_COLS + (LED_MATRIX_N_COLS - col - 1)) * 3  + color, character);
 			}
 			iLed++;
 		} else	{
 			//In our protocol, 0xff means a new frame starts
-			load_image();
+			image_load();
 			iLed = 0;
 		}
 		received = 1;

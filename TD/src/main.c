@@ -9,6 +9,7 @@
 #include "accelerometer.h"
 
 #define BAUDRATE 115200
+#define FRAMERATE 90
 #define TIMER_FREQUENCY 1000
 #define N_SAMPLES 100
 
@@ -104,14 +105,14 @@ int refresh()	{
 		snake[snake_head] = next_head;
 	}
 	
-	set_image();
+	image_reset();
 	for(int i = 0; i < snake_head; ++i)	{
-		update_image(3 * snake[i] + GREEN, 0xff);
+		image_update(3 * snake[i] + LED_MATRIX_GREEN, 0xff);
 	}
-	update_image(3 * snake[snake_head] + BLUE, 0xff);
-	update_image(3 * fruit + GREEN, 0xff);
-	update_image(3 * fruit + RED, 0xff);
-	load_image();
+	image_update(3 * snake[snake_head] + LED_MATRIX_BLUE, 0xff);
+	image_update(3 * fruit + LED_MATRIX_GREEN, 0xff);
+	image_update(3 * fruit + LED_MATRIX_RED, 0xff);
+	image_load();
 
 	return 0;
 }
@@ -121,7 +122,7 @@ int main(void)	{
 	button_init();
 	uart_init(BAUDRATE);
 	irq_init();
-	matrix_init();
+	led_matrix_init(FRAMERATE);
 	random_init();
 	accelerometer_init();
 	timer_init(TIMER_FREQUENCY, 1, 250, 500);
@@ -140,9 +141,6 @@ int main(void)	{
 				gameover = 0;
 			}
 		}
-		if(timer_triggered_display())	{
-			display_image();
-		}
 		if(timer_triggered_accelerometer() && !gameover)	{
 			update_direction();
 		}
@@ -150,17 +148,17 @@ int main(void)	{
 			int ret = refresh();
 			if(ret == 3)	{
 				gameover = 1;
-				set_image();
+				image_reset();
 				for(int i = 0; i < LED_MATRIX_N_LEDS * 3; ++i)
-					update_image(i, 0xff);
-				load_image();
+					image_update(i, 0xff);
+				image_load();
 			}
 			else if(ret > 0)	{
 				gameover = 1;
-				set_image();
+				image_reset();
 				for(int i = 0; i < LED_MATRIX_N_LEDS; ++i)
-					update_image(3 * i, 0xaa);
-				load_image();
+					image_update(3 * i, 0xaa);
+				image_load();
 			}
 		}
 		if(gameover && button_triggered())	{

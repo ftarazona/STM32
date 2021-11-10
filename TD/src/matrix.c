@@ -6,9 +6,15 @@ static rgb_color buffer2[LED_MATRIX_N_LEDS];
 static rgb_color * currentBuffer = buffer1;
 static rgb_color * currentImage = buffer2;
 
-/* matrix_init intializes every driver pin in output high speed mode
- * and put every led to 0. */
-void matrix_init(void)	{
+void TIM3_IRQHandler(void)	{
+	static int i_row = LED_MATRIX_N_ROWS;
+	CLEAR_BIT(TIM3->SR, TIM_SR_UIF);
+	--i_row;
+	led_matrix_set_row(i_row, currentImage + (LED_MATRIX_N_COLS * (i_row)));
+	if(i_row == 0)	{ i_row = LED_MATRIX_N_ROWS; }
+}
+
+void led_matrix_init(int framerate)	{
 	//Enabling peripherals' clocks
 	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN |
 					RCC_AHB2ENR_GPIOBEN |
@@ -43,28 +49,34 @@ void matrix_init(void)	{
 						(3 << GPIO_OSPEEDR_OSPEED5_Pos);
 
 	//Reseting the led matrix.
-	RST(0);
-	LAT(1);
-	SB(1);
-	SCK(0);
-	SDA(0);
-	deactivate_rows();
+	RST(0); LAT(1); SB(1); SCK(0); SDA(0);
+	led_matrix_deactivate_rows();
 
-	active_wait(N_TICKS_DELAY);	//Waits about 100ms
+	active_wait(LED_MATRIX_INIT_DELAY);	//Waits about 100ms
 	RST(1);
-	init_bank0();	//Sets every bit in bank0 to 1.
+	led_matrix_init_bank0();	//Sets every bit in bank0 to 1.
+
+	//Setting the timer for display
+	//Enabling clock for peripheral
+	SET_BIT(RCC->APB1ENR1, RCC_APB1ENR1_TIM3EN);
+	
+	//Reseting the timer
+	TIM3->CNT = 0;
+	TIM3->PSC = 80;
+	//The interrupt will display a new line.
+	TIM3->ARR = 1000000 / (framerate * LED_MATRIX_N_ROWS);
+	SET_BIT(TIM3->DIER, TIM_DIER_UIE);
+	SET_BIT(TIM3->CR1, TIM_CR1_CEN);
+	NVIC_DisableIRQ(TIM3_IRQn);
 }
 
-/* deactivate_rows clears every row. Instead of using 8 instructions,
- * we directly write in BSRRegister */
-void deactivate_rows(void)	{
+void led_matrix_deactivate_rows(void)	{
+	/* led_matrix_deactivate_rows is equivalent to ROW0(0); ...; ROW7(0); */
 	GPIOA->BSRR |= 0x80ec << 16;
 	GPIOB->BSRR |= 0x0005 << 16;
 }
 
-/* activate_row activates a given row. It does not affect any other
- * row. */
-void activate_row(int row)	{
+void led_matrix_activate_row(int row)	{
 	switch(row)	{
 		case 0: ROW0(1); break;
 		case 1: ROW1(1); break;
@@ -78,58 +90,39 @@ void activate_row(int row)	{
 	}
 }
 
-/* send_byte send 8 bit to the DM163 microcontroller, following the
- * protocol. */
-void send_byte(uint8_t val, int bank)	{
+void led_matrix_send_byte(uint8_t byte, int bank)	{
 	SB(bank);	//Select the bank
 	for(int i = 0; i < 8; ++i)	{
-		SDA(val & (1 << (7 - i)));
+		SDA(byte & (1 << (7 - i))); //Byte is sent MSB first
 		pulse_SCK();
 	}
 }
 
-/* mat_set_row transmits the information for the DM163 to set a given
- * row to the good values given. */
-void mat_set_row(int row, const rgb_color * val)	{
+void led_matrix_set_row(int row, const rgb_color * val)	{
+	/* We must think about when we call led_matrix_deactivate_rows.
+	 * If called too soon, the row will be less luminous.
+	 * If called too late, the last row will still light a little as
+	 *  the pins are slower than the clock.
+	 * As a result we place the call at the 6th iteration. */
 	for(int i = 0; i < 8; ++i)	{
-		send_byte(val[i].b, 1);
-		send_byte(val[i].g, 1);
-		send_byte(val[i].r, 1);
-		if(i == 5)
-			deactivate_rows();
+		if(i == 7)
+			led_matrix_deactivate_rows();
+		led_matrix_send_byte(val[i].b, 1);
+		led_matrix_send_byte(val[i].g, 1);
+		led_matrix_send_byte(val[i].r, 1);
 	}
 	pulse_LAT();
-	activate_row(row);
+	led_matrix_activate_row(row);
 }
 
-/* init_bank0 sets every bit in BANK0 to 1. */
-void init_bank0(void)	{
-	for(int i = 0; i < 24; ++i)	{
-		send_byte(0xff, 0);
-	}
+void led_matrix_init_bank0(void)	{
+	for(int i = 0; i < 24; ++i)	{ led_matrix_send_byte(0xff, 0); }
 	pulse_LAT();
 }
 
-/* display_image displays the image described by global object
- * led_values. */
-void display_image(void)	{
-	for(int i = 0; i < LED_MATRIX_N_ROWS; ++i)	{
-		mat_set_row(i, currentImage + (LED_MATRIX_N_COLS * i));
-	}
-	active_wait(30);
-	deactivate_rows();
-}
-
-/* load_image loads the next image from buffer and sets iLED to 0.
- * It switches the pointer to the array not currently pointed.
- * The previous buffer is not automatically cleared, it has to be
- * erased by calling set_image */
-void load_image(void)	{
-	for(int i = 0; i < LED_MATRIX_N_LEDS; ++i)	{
-		currentImage[i].r = 0;
-		currentImage[i].g = 0;
-		currentImage[i].b = 0;
-	}
+void image_load(void)	{
+	/* When the buffer is loaded, the former image becomes a new 
+	 *  buffer. As a result it is reset in memory. */
 	if(currentBuffer == buffer1)	{
 		currentImage = buffer1;
 		currentBuffer = buffer2;
@@ -137,25 +130,23 @@ void load_image(void)	{
 		currentImage = buffer2;
 		currentBuffer = buffer1;
 	}
+	NVIC_EnableIRQ(TIM3_IRQn);	//Allowing the display
+	memset(currentBuffer, 0, LED_MATRIX_N_LEDS * sizeof(rgb_color));
 }
 
-/* update_image writes the value given in the buffer.
- * Returns 1 if the buffer is full. 
- * Returns -1 if attempt to write in a full buffer. */
-void update_image(int i, uint8_t val)	{
+void image_update(int i, uint8_t val)	{
 	switch(i % 3)	{
-		case RED	: currentBuffer[i / 3].r = val; break;
-		case GREEN	: currentBuffer[i / 3].g = val; break;
-		case BLUE	: currentBuffer[i / 3].b = val; break;
+		case LED_MATRIX_RED		: currentBuffer[i / 3].r = val; break;
+		case LED_MATRIX_GREEN	: currentBuffer[i / 3].g = val; break;
+		case LED_MATRIX_BLUE	: currentBuffer[i / 3].b = val; break;
 		default		: break;
 	}
 }
 
-/* void_image sets every remaining bit of the buffer to 0 */
-void set_image(void)	{
-	for(int i = 0; i < LED_MATRIX_N_LEDS; ++i)	{
-		currentBuffer[i].r = 0;
-		currentBuffer[i].g = 0;
-		currentBuffer[i].b = 0;
-	}
+void image_reset(void)	{
+	/* Reseting the image results in both buffers to be reset and the
+	 * display to be stopped. */
+	NVIC_DisableIRQ(TIM3_IRQn);
+	memset(buffer1, 0, LED_MATRIX_N_LEDS * sizeof(rgb_color));
+	memset(buffer2, 0, LED_MATRIX_N_LEDS * sizeof(rgb_color));
 }
