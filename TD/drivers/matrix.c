@@ -14,7 +14,7 @@ void TIM3_IRQHandler(void)	{
 	if(++i_row == LED_MATRIX_N_ROWS)	{ i_row = 0; }
 }
 
-void led_matrix_init(int framerate)	{
+void led_matrix_init(int framerate, uint8_t intensity)	{
 	//Enabling peripherals' clocks
 	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN |
 					RCC_AHB2ENR_GPIOBEN |
@@ -54,7 +54,7 @@ void led_matrix_init(int framerate)	{
 
 	active_wait(LED_MATRIX_INIT_DELAY);	//Waits about 100ms
 	RST(1);
-	led_matrix_init_bank0();	//Sets every bit in bank0 to 1.
+	led_matrix_init_bank0(intensity);
 
 	//Setting the timer for display
 	//Enabling clock for peripheral
@@ -116,8 +116,14 @@ void led_matrix_set_row(int row, const rgb_color * val)	{
 	led_matrix_activate_row(row);
 }
 
-void led_matrix_init_bank0(void)	{
-	for(int i = 0; i < 24; ++i)	{ led_matrix_send_byte(0xff, 0); }
+void led_matrix_init_bank0(uint8_t byte)	{
+	SB(0);
+	for(int i = 0; i < LED_MATRIX_N_LEDS * 3; ++i)	{ 
+		for(int j = 0; j < 6; ++j)	{
+			SDA(byte & (1 << (5 - i)));
+			pulse_SCK();
+		}
+	}
 	pulse_LAT();
 }
 

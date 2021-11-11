@@ -150,7 +150,7 @@ int main(void)	{
 	clocks_init();
 	irq_init();
 	button_init();
-	led_matrix_init(FRAMES_PER_SECOND);
+	led_matrix_init(FRAMES_PER_SECOND, 0x88);
 	i2c_master_init();
 	accelerometer_init();
 	random_init();

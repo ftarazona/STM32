@@ -30,7 +30,7 @@ SECTIONS	{
 
 	.rodata :	{
 		_rodata = . ;
-		*(.rodata)
+		*(.rodata*)
 		_erodata = . ;
 	} > flash
 

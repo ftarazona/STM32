@@ -13,18 +13,16 @@
 
 int main(void)	{
 	/* Initializations. For the uart-controlled matrix, we need 
-	 *  uart for receiving characters
-	 *   irq required
 	 *  led_matrix for display
 	 *   irq required
 	 * */
 	clocks_init();
 	irq_init();
-	uart_init(BAUDRATE);
-	led_matrix_init(FRAMES_PER_SECOND, 0x88);
+	led_matrix_init(FRAMES_PER_SECOND, 0xff);
 
-	/* The UART driver works by default with the led matrix when
-	 * enabling the interrupt mode. */
-	uart_enable_interrupt_mode();
+	for(int i = 0; i < LED_MATRIX_N_LEDS * 3; ++i)	{
+		image_update(i, 0xff);
+	}
+	image_load();
 	while(1);
 }

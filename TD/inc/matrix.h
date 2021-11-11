@@ -62,10 +62,10 @@ typedef struct	{
  * display. 
  *
  * To avoid flickering, at least 60 fps is recommended. */
-void led_matrix_init(int frame_rate);
+void led_matrix_init(int frame_rate, uint8_t intensity);
 
-/* Initializes BANK0. */
-void led_matrix_init_bank0(void);
+/* Initializes BANK0 with every led set to byte */
+void led_matrix_init_bank0(uint8_t byte);
 
 
 /* Deactivates every row. */
