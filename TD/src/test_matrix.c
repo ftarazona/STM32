@@ -18,7 +18,7 @@ int main(void)	{
 	 * */
 	clocks_init();
 	irq_init();
-	led_matrix_init(FRAMES_PER_SECOND, 0xff);
+	led_matrix_init(FRAMES_PER_SECOND, 0x0a);
 
 	for(int i = 0; i < LED_MATRIX_N_LEDS * 3; ++i)	{
 		image_update(i, 0xff);

@@ -21,7 +21,7 @@ int main(void)	{
 	clocks_init();
 	irq_init();
 	uart_init(BAUDRATE);
-	led_matrix_init(FRAMES_PER_SECOND, 0x88);
+	led_matrix_init(FRAMES_PER_SECOND, 10);
 
 	/* The UART driver works by default with the led matrix when
 	 * enabling the interrupt mode. */
