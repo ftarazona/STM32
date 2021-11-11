@@ -24,7 +24,7 @@ SECTIONS	{
 
 	.text :	{
 		_text = . ;
-		*(.text)
+		*(.text*)
 		_etext = . ;
 	} > sram1 AT> flash
 

@@ -1,3 +1,9 @@
+/* timer.h -- General purpose timers Driver
+ * ****************************************
+ * This header declares proper functions for using a general purpose
+ * timer, TIM2.
+ * */
+
 #ifndef TIMER_H
 #define TIMER_H
 
@@ -6,12 +12,11 @@
 
 #include "led.h"
 
-/* Initialization. MUST BE CALLED BEFORE ANY USE OF TIMER. */
 void timer_init(int max_us);
 
 int timer_triggered(void);
-/* Overwrites the default IRQ Handler.
- * If led can be toggled, then it is toggled. */
+
+/* Overwrites the default IRQ Handler. */
 void TIM2_IRQHandler(void);
 
 /* Enters a nop loop for waiting a given number of ticks. */

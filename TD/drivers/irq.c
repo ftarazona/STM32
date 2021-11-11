@@ -1,7 +1,6 @@
 #include "irq.h"
 
 extern unsigned int _stack;
-extern void _start(void);
 extern void _textcpy(void);
 
 MAKE_DEFAULT_HANDLER(NMI_Handler)
@@ -101,17 +100,24 @@ void irq_init(void)	{
 	SCB->VTOR = (uint32_t)vector_table;
 }
 
+/* When debugging, we don't need a specific section for the vector table
+ * but we need it to be aligned.
+ * When writing to the flash, we need the vector table to be at address
+ * 0x00000000 (aka 0x08000000), the align instruction would put it
+ * further, which we do not want */
 #ifdef DEBUG
-	_Alignas(0x100)
+//	_Alignas(0x100)
+	__attribute__((aligned(0x100)))
 #endif
 void *vector_table[N_IRQ] 
 #ifndef DEBUG
 	__attribute__((section(".nvic"))) 
 #endif	
+
 	=	{
 	//Stack and reset
 	&_stack,
-	_textcpy,
+	&_textcpy,
 
 	//Internal exceptions
 	NMI_Handler,

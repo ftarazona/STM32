@@ -1,21 +1,38 @@
+/* matrix.h -- LED Matrix driver
+ *******************************
+ * This header declares proper functions for initializing and using
+ * the Arduino RGB LED Matrix Shield.
+ *
+ * The shield embeds a driver chip, DMF163 which is in charge of
+ * generating PWM signals according to the data given.
+ *
+ * The driver uses TIM3 for setting the framerate independently from
+ * other general purpose timers. As a consequence, TIM3 SHALL NOT BE
+ * USED WHILE THE MATRIX IS USED.
+ * */
+
 #ifndef MATRIX_H
 #define MATRIX_H
 
 #include <stm32l4xx.h>
 #include <stm32l475xx.h>
 
+#include "memfuncs.h"
+
+/* The matrix uses a timer for display */
 #include "timer.h"
 
 #define LED_MATRIX_N_ROWS 8
 #define LED_MATRIX_N_COLS 8
 #define LED_MATRIX_N_LEDS LED_MATRIX_N_ROWS * LED_MATRIX_N_COLS
 
-#define RED 0
-#define GREEN 1
-#define BLUE 2
+#define LED_MATRIX_RED 		0
+#define LED_MATRIX_GREEN 	1
+#define LED_MATRIX_BLUE 	2
 
-#define N_TICKS_DELAY 100000
+#define LED_MATRIX_INIT_DELAY	1000
 
+//Some useful macros for setting or resetting the pins
 #define SB(x)	if(x) {SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS5);} else {SET_BIT(GPIOC->BSRR, GPIO_BSRR_BR5);}
 #define LAT(x)	if(x) {SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS4);} else {SET_BIT(GPIOC->BSRR, GPIO_BSRR_BR4);}
 #define RST(x)	if(x) {SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS3);} else {SET_BIT(GPIOC->BSRR, GPIO_BSRR_BR3);}
@@ -30,8 +47,8 @@
 #define ROW6(x)	if(x) {SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS0);} else {SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0);}
 #define ROW7(x)	if(x) {SET_BIT(GPIOA->BSRR, GPIO_BSRR_BS3);} else {SET_BIT(GPIOA->BSRR, GPIO_BSRR_BR3);}
 
-#define pulse_SCK SCK(1); SCK(0);
-#define pulse_LAT LAT(0); LAT(1);
+#define pulse_SCK() SCK(1); SCK(0)
+#define pulse_LAT() LAT(0); LAT(1)
 
 /* rgb_color describes the state of 3-color led */
 typedef struct	{
@@ -40,33 +57,44 @@ typedef struct	{
 	uint8_t b;
 } rgb_color;
 
-/* Initialization. MUST BE CALLED BEFORE ANY LED MATRIX MANIPULATION
- * */
-void matrix_init(void);
+/* Initializes the matrix with a given frame rate.
+ * The frame rate corresponds to the time in us between two complete
+ * display. 
+ *
+ * To avoid flickering, at least 60 fps is recommended. */
+void led_matrix_init(int frame_rate);
 
-/* Deactivates every row */
-void deactivate_rows(void);
-/* Activates a given row */
-void activate_row(int row);
+/* Initializes BANK0. */
+void led_matrix_init_bank0(void);
 
-/* Sends 8 bit to the matrix. THIS FUNCTION MAY NOT BE CALLED BY 
- * USER */
-void send_byte(uint8_t val, int bank);
-/* Sets BANK0. THIS FUNCITON MAY NOT BE CALLED BY USER. */
-void init_bank0(void);
 
-/* sets a row to given values */
-void mat_set_row(int row, const rgb_color * val);
-/* displays image described by led_values array */
-void display_image(void);
+/* Deactivates every row. */
+void led_matrix_deactivate_rows(void);
 
-/* Loads the next image. */
-void load_image(void);
+/* Activates a given row. */
+void led_matrix_activate_row(int row);
+
+/* Sends 8 bits to the matrix.
+ * byte is the byte to be sent.
+ * bank is the bank to send to. */
+void led_matrix_send_byte(uint8_t byte, int bank);
+
+/* Sets a row to given RGB values. */
+void led_matrix_set_row(int row, const rgb_color * val);
+
+
+
+/* Loads the image updated up to now. */
+void image_load(void);
+
 /* Updates information about next image to display.
- *  val is the value to write. The writing follows this order :
- *  led0 r, led0 g, led0 b, led1 r, ... */
-int update_image(uint8_t val);
-/* Fills the remaining leds of the current image to 0 */
-void set_image(void);
+ *  i is the position and color of the LED :
+ *   i / 3 is the position
+ *   i % 3 is the color
+ *  val is the value of intensity wanted. */
+void image_update(int i, uint8_t val);
+
+/* Resets the image */
+void image_reset(void);
 
 #endif
