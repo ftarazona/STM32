@@ -1,3 +1,9 @@
+/* random.h -- Random Number Generator Driver
+ * ******************************************
+ * This header declares proper functions for using the rnadom number
+ * generator embedded.
+ * */
+
 #ifndef RANDOM_H
 #define RANDOM_H
 
@@ -6,6 +12,8 @@
 
 void random_init();
 
+/* Returns a random 32-bit number different from 0.
+ * If 0 is returned, the value may not be considered random. */
 uint32_t random_get();
 
 #endif

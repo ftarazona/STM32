@@ -7,11 +7,11 @@ static rgb_color * currentBuffer = buffer1;
 static rgb_color * currentImage = buffer2;
 
 void TIM3_IRQHandler(void)	{
-	static int i_row = LED_MATRIX_N_ROWS;
+	static int i_row = 0;
+	//Acknowledges the reception of the interruption
 	CLEAR_BIT(TIM3->SR, TIM_SR_UIF);
-	--i_row;
-	led_matrix_set_row(i_row, currentImage + (LED_MATRIX_N_COLS * (i_row)));
-	if(i_row == 0)	{ i_row = LED_MATRIX_N_ROWS; }
+	led_matrix_set_row(i_row, currentImage + (LED_MATRIX_N_COLS * i_row));
+	if(++i_row == LED_MATRIX_N_ROWS)	{ i_row = 0; }
 }
 
 void led_matrix_init(int framerate)	{
@@ -63,10 +63,11 @@ void led_matrix_init(int framerate)	{
 	//Reseting the timer
 	TIM3->CNT = 0;
 	TIM3->PSC = 80;
-	//The interrupt will display a new line.
+	//The interrupt will display a new line, not the entire matrix.
 	TIM3->ARR = 1000000 / (framerate * LED_MATRIX_N_ROWS);
 	SET_BIT(TIM3->DIER, TIM_DIER_UIE);
 	SET_BIT(TIM3->CR1, TIM_CR1_CEN);
+	//Display is disabled by default
 	NVIC_DisableIRQ(TIM3_IRQn);
 }
 

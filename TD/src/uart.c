@@ -1,20 +1,17 @@
 #include "uart.h"
-#include "matrix.h"
 
-static int received = 0;
-static int overrun = 0;
-static uint8_t character = 0;
-
-/* uart_init initializes uart1 to establish a serial communication.
-   TX is on PB6, RX is on PB7, both in alternate function 7 */
 void uart_init(int baudrate)	{
+	/* uart_init initializes uart1 to establish a serial communication.
+   	TX is on PB6, RX is on PB7, both in alternate function 7 */
+	
 	//TX/RX initializations
 	SET_BIT(RCC->AHB2ENR, RCC_AHB2ENR_GPIOBEN);
 	//Selection of alternate function AF7
-	GPIOB->MODER = (GPIOB->MODER & ~GPIO_MODER_MODE6_Msk) | GPIO_MODER_MODER6_1;
-	GPIOB->AFR[0] = (GPIOB->AFR[0] & ~GPIO_AFRL_AFSEL6_Msk) | (0x7UL << GPIO_AFRL_AFSEL6_Pos);
-	GPIOB->MODER = (GPIOB->MODER & ~GPIO_MODER_MODE7_Msk) | GPIO_MODER_MODER7_1;
-	GPIOB->AFR[0] = (GPIOB->AFR[0] & ~GPIO_AFRL_AFSEL7_Msk) | (0x7UL << GPIO_AFRL_AFSEL7_Pos);
+	GPIOB->MODER = (GPIOB->MODER & 0xffff0fff) |
+					GPIO_MODER_MODE6_1 | GPIO_MODER_MODE7_1;
+	GPIOB->AFR[0] = (GPIOB->AFR[0] & 0x00ffffff) |
+					(0x7UL << GPIO_AFRL_AFSEL6_Pos) |
+					(0x7UL << GPIO_AFRL_AFSEL7_Pos);
 
 	//Enable clock for USART1
 	SET_BIT(RCC->APB2ENR, RCC_APB2ENR_USART1EN);
@@ -26,6 +23,7 @@ void uart_init(int baudrate)	{
 	SET_BIT(RCC->APB2RSTR, RCC_APB2RSTR_USART1RST);
 	CLEAR_BIT(RCC->APB2RSTR, RCC_APB2RSTR_USART1RST);
 
+	//Setting baudrate
 	USART1->BRR = USART_CLOCK_FREQUENCY / baudrate;
 
 	CLEAR_BIT(USART1->CR1, USART_CR1_OVER8);	//Oversampling to 16
@@ -38,26 +36,29 @@ void uart_init(int baudrate)	{
 
 	//Enable interrupts for reception
 	SET_BIT(USART1->CR1, USART_CR1_RXNEIE);
-	NVIC_EnableIRQ(USART1_IRQn);
-	NVIC_SetPriority(USART1_IRQn, 10);
+	NVIC_DisableIRQ(USART1_IRQn);
 }
 
-/* uart_putchar transmits a character. */
-void uart_putchar(uint8_t c)	{
-	while(!(USART1->ISR & USART_ISR_TXE));
+void uart_enable_interrupt_mode(void)	{ NVIC_EnableIRQ(USART1_IRQn); }
 
+void uart_disable_interrupt_mode(void)	{ NVIC_DisableIRQ(USART1_IRQn); }
+
+void uart_putchar(uint8_t c)	{
+	/* The bit USART_ISR_TXE is set by hardware when a character is
+	 * ready to be sent. */
+	while(!(USART1->ISR & USART_ISR_TXE));
 	USART1->TDR = c;
 }
 
-/* uart_getchar waits until a character is received and catches it. */
 uint8_t uart_getchar()	{
+	/* The bit USART_ISR_RXNE is set by hardware when a character is
+	 * ready to be read. */
 	while(!(USART1->ISR & USART_ISR_RXNE));
-
 	return USART1->RDR;
 }
 
-/* uart_puts emits an entire string and jump line. */
 void uart_puts(const char * str)	{
+	/* uart_puts emits an entire string and jump line. */
 	while(*str != '\0')	{
 		uart_putchar(*str++);
 	}
@@ -65,8 +66,8 @@ void uart_puts(const char * str)	{
 	uart_putchar('\n');
 }
 
-/* uart_gets receives a string of a maximum size */
 void uart_gets(char * str, size_t size)	{
+	/* uart_gets receives a string of a maximum size */
 	uint8_t c = 255;
 	size_t i = 0;
 	while(c != '\r' && c != '\n' && c != '\0' && i < size - 1)	{
@@ -77,63 +78,47 @@ void uart_gets(char * str, size_t size)	{
 	*str = '\0';
 }
 
-/* print_hex prints emits characters so that a number is eventually
-   written */
 void uart_print_hex(uint32_t n)	{
-	if(n == 0)	{
-		return;
+	int r[8] = {0};
+	for(int i = 0; i < 8; ++i)	{
+		r[i] = n % 16;
+		n = n / 16;
 	}
-	int q = n / 16;
-	int r = n % 16;
-	uart_print_hex(q);
-	if(r < 10)	{
-		uart_putchar('0' + r);
-	} else	{
-		uart_putchar('A' + r - 10);
+	for(int i = 0; i < 8; ++i)	{
+		if(r[7 - i] < 10)	{
+			uart_putchar('0' + r[7 - i]);
+		} else	{
+			uart_putchar('A' + r[7 - i] - 10);
+		}
 	}
+	uart_puts("");
 }
 
-/* received_character returns 1 if a character was received, 0 otherwise
- * In case no character was received, nothing is written in c. 
- * Returns -1 if an override occured. */
-int uart_received(uint8_t * c)	{
-	if(overrun)	{
-		SET_BIT(USART1->ICR, USART_ICR_ORECF);
-		overrun = 0;
-		return -1; 
-	}
-	if(received)	{
-		*c = character;
-		received = 0;
-		return 1;
-	} else	{
-		return 0;
-	}
-}
-
-/* The IRQ Handler reads a character and stores it in the right led
- * configuration. */
 void USART1_IRQHandler(void)	{
-	static int iLed = 0;
+	/* The IRQ Handler reads a character and stores it in the right 
+	 * led configuration. */
+	static int i_row = 0;
+	static int i_col = 0;
+	static int color = 0;
+
 	if(USART1->ISR & USART_ISR_RXNE)	{
-		character = USART1->RDR;
-		if(character != 0xff)	{
-			if(iLed < 3 * LED_MATRIX_N_LEDS)	{
-				int row = (iLed / 3) / LED_MATRIX_N_COLS;
-				int col = (iLed / 3) % LED_MATRIX_N_COLS;
-				int color = iLed % 3;
-				image_update((row * LED_MATRIX_N_COLS + (LED_MATRIX_N_COLS - col - 1)) * 3  + color, character);
-			}
-			iLed++;
+		uint8_t character = USART1->RDR;
+		if(character != 0xff && i_row < LED_MATRIX_N_ROWS)	{
+			image_update((i_row * LED_MATRIX_N_COLS + (LED_MATRIX_N_COLS - i_col - 1)) * 3  + color, character);
+			//Incrementing 
+			color++;
+			if(color >= 3)	{ color = 0; i_col++; }
+			if(i_col >= LED_MATRIX_N_COLS)	{ i_col = 0; i_row++; }
 		} else	{
 			//In our protocol, 0xff means a new frame starts
 			image_load();
-			iLed = 0;
+			//Reseting
+			i_row = 0; i_col = 0; color = 0;
 		}
-		received = 1;
 	} else if(USART1->ISR & USART_ISR_ORE)	{
 		/* If the code does not execute fast enough in comparison to
 		 * the baud rate, it is possible that an overrun occurs. */
-		overrun = 1;
+		SET_BIT(USART1->ICR, USART_ICR_ORECF);
+		CLEAR_BIT(USART1->ICR, USART_ICR_ORECF);
 	}
 }

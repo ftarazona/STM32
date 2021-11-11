@@ -30,7 +30,7 @@
 #define LED_MATRIX_GREEN 	1
 #define LED_MATRIX_BLUE 	2
 
-#define LED_MATRIX_INIT_DELAY	100000
+#define LED_MATRIX_INIT_DELAY	1000
 
 //Some useful macros for setting or resetting the pins
 #define SB(x)	if(x) {SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS5);} else {SET_BIT(GPIOC->BSRR, GPIO_BSRR_BR5);}
@@ -59,7 +59,9 @@ typedef struct	{
 
 /* Initializes the matrix with a given frame rate.
  * The frame rate corresponds to the time in us between two complete
- * display. */
+ * display. 
+ *
+ * To avoid flickering, at least 60 fps is recommended. */
 void led_matrix_init(int frame_rate);
 
 /* Initializes BANK0. */

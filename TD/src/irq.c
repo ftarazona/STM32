@@ -106,7 +106,8 @@ void irq_init(void)	{
  * 0x00000000 (aka 0x08000000), the align instruction would put it
  * further, which we do not want */
 #ifdef DEBUG
-	_Alignas(0x100)
+//	_Alignas(0x100)
+	__attribute__((aligned(0x100)))
 #endif
 void *vector_table[N_IRQ] 
 #ifndef DEBUG
