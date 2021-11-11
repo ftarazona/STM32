@@ -119,7 +119,7 @@ void led_matrix_set_row(int row, const rgb_color * val)	{
 void led_matrix_init_bank0(uint8_t byte)	{
 	SB(0);
 	for(int i = 0; i < LED_MATRIX_N_LEDS * 3; ++i)	{ 
-		for(int j = 0; j < 6; ++j)	{
+		for(int j = 0; j < 5; ++j)	{
 			SDA(byte & (1 << (5 - i)));
 			pulse_SCK();
 		}
