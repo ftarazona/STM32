@@ -21,8 +21,10 @@ else
 endif
 LDFLAGS	= -g -T $(LDSCRIPT) -nostdlib
 
-OFILES	= crt0.o init.o memfuncs.o clocks.o uart.o irq.o led.o button.o timer.o matrix.o i2c.o random.o accelerometer.o
-OBJS	= $(addprefix build/, $(OFILES)) build/uart_matrix.o
+DRIVERS	= $(patsubst drivers/%.c, build/%.o, $(wildcard drivers/*.c))
+LIBS	= $(patsubst libs/%.c, build/%.o, $(wildcard libs/*.c))
+ASM		= $(patsubst libs/%.s, build/%.o, $(wildcard libs/*.s))
+OBJS	= $(ASM) $(LIBS) $(DRIVERS) build/uart_matrix.o
 DEPS	= $(patsubst build/%.o, dep/%.dep, $(OBJS))
 EXE		= main.elf
 
@@ -39,6 +41,7 @@ $(EXE): $(OBJS)
 	$(LD) $(LDFLAGS) $^ -o $@ $(LDLIBS)
 
 build/%.o : %.c
+	echo $(OBJS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 build/%.o : %.s
