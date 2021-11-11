@@ -37,3 +37,7 @@ For flashing, first connect to the card : make connect
 Then compile : make
 Then launch gdb : make gdb
 Flash the program, then close everything if DEBUG was not set.
+
+# About Snake
+
+After some modifications in the manner of displaying the LED Matrix, snake is not working well. It is still in debugging, but you can find a correct version at commit 32d61b7.
