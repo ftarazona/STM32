@@ -91,14 +91,6 @@ void led_matrix_activate_row(int row)	{
 	}
 }
 
-void led_matrix_send_byte(uint8_t byte, int bank)	{
-	SB(bank);	//Select the bank
-	for(int i = 0; i < 8; ++i)	{
-		SDA(byte & (1 << (7 - i))); //Byte is sent MSB first
-		pulse_SCK();
-	}
-}
-
 void led_matrix_set_row(int row, const rgb_color * val)	{
 	/* We must think about when we call led_matrix_deactivate_rows.
 	 * If called too soon, the row will be less luminous.

@@ -9,8 +9,8 @@
 #include "uart.h"
 
 #define BAUDRATE 115200
-#define FRAMES_PER_SECOND 90
-#define TIMER_PERIOD_US 400000
+#define FRAMES_PER_SECOND 50
+#define TIMER_PERIOD_US 500000
 
 #define DIRECTION_NONE 0
 #define DIRECTION_UP 1
@@ -49,7 +49,7 @@ void generate_new_fruit()	{
 	for(int i = 0; i <= snake_head; ++i)
 		busy[snake[i]] = 1;
 
-	int shift = random_get() & (LED_MATRIX_N_LEDS - 1 - snake_head);
+	int shift = random_get() % (LED_MATRIX_N_LEDS - 1 - snake_head);
 	int i = 0;
 	while(shift > 0 || busy[i])	{
 		if(!busy[i])	{
@@ -60,10 +60,11 @@ void generate_new_fruit()	{
 	fruit = i;
 }
 
-int refresh_snake(int direction)	{
+int refresh_snake()	{
 	//Calculating the next position of the snake's head.
 	int next_head = snake[snake_head];
 	int overflow = 0;
+	int direction = update_direction();
 	switch(direction)	{
 		case DIRECTION_UP : 
 			next_head += LED_MATRIX_N_COLS;
@@ -173,8 +174,7 @@ int main(void)	{
 			else						{ pause = !pause; }
 		}
 		if(timer_triggered() && !pause && !(gameover || completed))	{
-			int direction = update_direction();
-			int ret_refresh_snake = refresh_snake(direction);
+			int ret_refresh_snake = refresh_snake();
 			if(ret_refresh_snake < 0)		{ gameover = 1; }
 			else if(ret_refresh_snake > 0)	{ completed = 1; }
 			display_snake();
@@ -193,11 +193,9 @@ int main(void)	{
 			completed 	= 0;
 			gameover 	= 0;
 			reset 		= 0;
-		}
-		if(gameover)	{
+		} else if(gameover)	{
 			fill_matrix(0xff0000);
-		}
-		if(completed)	{
+		} else if(completed)	{
 			fill_matrix(0xffffff);
 		}
 	}

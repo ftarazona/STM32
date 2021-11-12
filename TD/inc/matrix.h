@@ -77,7 +77,13 @@ void led_matrix_activate_row(int row);
 /* Sends 8 bits to the matrix.
  * byte is the byte to be sent.
  * bank is the bank to send to. */
-void led_matrix_send_byte(uint8_t byte, int bank);
+static inline void led_matrix_send_byte(uint8_t byte, int bank)	{
+	SB(bank);	//Select the bank
+	for(int i = 0; i < 8; ++i)	{
+		SDA(byte & (1 << (7 - i))); //Byte is sent MSB first
+		pulse_SCK();
+	}
+}
 
 /* Sets a row to given RGB values. */
 void led_matrix_set_row(int row, const rgb_color * val);
