@@ -9,7 +9,7 @@
 #include "uart.h"
 
 #define BAUDRATE 115200
-#define FRAMES_PER_SECOND 50
+#define FRAMES_PER_SECOND 60
 #define TIMER_PERIOD_US 500000
 
 #define DIRECTION_NONE 0
