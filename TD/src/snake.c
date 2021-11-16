@@ -10,7 +10,7 @@
 
 #define BAUDRATE 115200
 #define FRAMES_PER_SECOND 60
-#define TIMER_PERIOD_US 500000
+#define TIMER_PERIOD_US 700000
 
 #define DIRECTION_NONE 0
 #define DIRECTION_UP 1
@@ -50,14 +50,14 @@ void generate_new_fruit()	{
 		busy[snake[i]] = 1;
 
 	int shift = random_get() % (LED_MATRIX_N_LEDS - 1 - snake_head);
-	int i = 0;
-	while(shift > 0 || busy[i])	{
-		if(!busy[i])	{
+	int new_fruit = 0;
+	while(shift > 0 || busy[new_fruit])	{
+		if(!busy[new_fruit])	{
 			shift--;
 		}
-		i++;
+		new_fruit++;
 	}
-	fruit = i;
+	fruit = new_fruit;
 }
 
 int refresh_snake()	{
@@ -86,7 +86,8 @@ int refresh_snake()	{
 				overflow = 1;
 			next_head--;
 			break;
-		default : break;
+		default : 
+			break;
 	}
 
 	//Gameover condition
@@ -156,6 +157,7 @@ int main(void)	{
 	accelerometer_init();
 	random_init();
 	timer_init(TIMER_PERIOD_US);
+	uart_init(BAUDRATE);
 
 	/* Control variables. We need
 	 *  reset for restarting game
