@@ -24,7 +24,7 @@ LDFLAGS	= -g -T $(LDSCRIPT) -nostdlib
 DRIVERS	= $(patsubst drivers/%.c, build/%.o, $(wildcard drivers/*.c))
 LIBS	= $(patsubst libs/%.c, build/%.o, $(wildcard libs/*.c))
 ASM		= $(patsubst libs/%.s, build/%.o, $(wildcard libs/*.s))
-OBJS	= $(ASM) $(LIBS) $(DRIVERS) build/uart_matrix.o
+OBJS	= $(ASM) $(LIBS) $(DRIVERS) build/snake.o
 DEPS	= $(patsubst build/%.o, dep/%.dep, $(OBJS))
 EXE		= main.elf
 
