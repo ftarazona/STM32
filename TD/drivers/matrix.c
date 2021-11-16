@@ -1,5 +1,6 @@
 #include <stddef.h>
 #include "matrix.h"
+#include "uart.h"
 
 static rgb_color buffer1[LED_MATRIX_N_LEDS];
 static rgb_color buffer2[LED_MATRIX_N_LEDS];

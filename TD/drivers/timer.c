@@ -1,7 +1,8 @@
 #include "timer.h"
 #include "matrix.h"
+#include "uart.h"
 
-static int timer_trigger;
+static volatile int timer_trigger;
 
 void timer_init(int max_us)	{
 	//Enabling TIM2 on APB1

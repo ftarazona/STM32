@@ -1,4 +1,5 @@
 #include "i2c.h"
+#include "uart.h"
 
 void i2c_master_init()	{
 	//Enabling clock for GPIOB
