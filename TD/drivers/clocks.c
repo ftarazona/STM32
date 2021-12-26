@@ -13,6 +13,7 @@ void clocks_init(void) {
     PWR->CR1 |= PWR_CR1_DBP;
 
     // MSIRANGE can be set only when MSI is OFF or READY
+    RCC->CR = (RCC-CR & ~RCC_CR_MSIRANGE_Msk) | (0x7 << RCC_CR_MSIRANGE_Pos);
     RCC->CR = RCC_CR_MSION;
     // Wait until MSI is stable
     while ((RCC->CR & RCC_CR_MSIRDY) == 0) ;
@@ -36,10 +37,11 @@ void clocks_init(void) {
     // Update PLL
     // PLLM = 1 --> 000
     // PLLN = 40 --> 40
+    // PLLP = 7 -> 0
     // PPLLR = 2 --> 00
     // PLLDIV = unused, PLLP = unused (SAI3), PLLQ = unused (48M1)
     // SRC = MSI --> 01
-    RCC->PLLCFGR = RCC_PLLCFGR_PLLREN | (40 << RCC_PLLCFGR_PLLN_Pos) | RCC_PLLCFGR_PLLSRC_MSI;
+    RCC->PLLCFGR = RCC_PLLCFGR_PLLREN | (40 << RCC_PLLCFGR_PLLN_Pos) | (0x1 << RCC_PLLCFGR_PLLR_Pos) | RCC_PLLCFGR_PLLSRC_MSI;
 
     // PLL activation
     RCC->CR |= RCC_CR_PLLON;
@@ -47,11 +49,10 @@ void clocks_init(void) {
     /* Waiting for PLL lock.*/
     while ((RCC->CR & RCC_CR_PLLRDY) == 0) ;
 
-    // RCC_CFGR is OK by defaut
     RCC->CFGR = 0;
 
-    // CCIPR : no periph clock by default
-    RCC->CCIPR = 0;
+    // CCIPR : SAI1 from PLL "P" CLK
+    RCC->CCIPR = 0x2 << RCC_CCIPR_SAI1SEL_Pos;
 
     // Switches on the PLL clock source
     RCC->CFGR = (RCC->CFGR  & ~RCC_CFGR_SW_Msk) | RCC_CFGR_SW_PLL;

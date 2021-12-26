@@ -54,11 +54,11 @@ build/%.o : %.s
 
 clean:
 	rm -f $(EXE)
-	rm -f $(OBJS)
+	rm -f build/*
 
 clean-all: clean
-	rm -f $(EXE)
-	rm -f $(DEPS)
+	rm -f 
+	rm -f dep/*
 
 connect:
 	JLinkGDBServer -device STM32L475VG -endian little -if SWD -speed auto -ir-LocalhostOnly
