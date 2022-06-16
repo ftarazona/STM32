@@ -13,7 +13,7 @@ void clocks_init(void) {
     PWR->CR1 |= PWR_CR1_DBP;
 
     // MSIRANGE can be set only when MSI is OFF or READY
-    RCC->CR = (RCC-CR & ~RCC_CR_MSIRANGE_Msk) | (0x7 << RCC_CR_MSIRANGE_Pos);
+    RCC->CR = (RCC->CR & ~RCC_CR_MSIRANGE_Msk) | (0x7 << RCC_CR_MSIRANGE_Pos);
     RCC->CR = RCC_CR_MSION;
     // Wait until MSI is stable
     while ((RCC->CR & RCC_CR_MSIRDY) == 0) ;
